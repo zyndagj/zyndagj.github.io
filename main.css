@@ -1,0 +1,147 @@
+/* 
+ * Written By: Gregory J. Zynda
+ * 11/26/2013
+ *
+ * This work is licensed under the Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License. To view a copy of this license, visit http://creativecommons.org/licenses/by-nc-sa/4.0/deed.en_US.
+ */
+
+body {
+	background-color: #E5E5E5;
+	margin: 0;
+}
+
+div.bBack {
+	width: 975px;
+	background-color: #333333;
+	margin: 5px auto 0;
+	font-family: 'Oxygen', sans-serif;
+	color: white;
+}
+
+#banner {
+	text-align: center;
+	width: 975px;
+	padding-top: 10px;
+	padding-bottom: 9px;
+}
+
+#name {
+	display: inline-block;
+	height: 263px;
+	margin: 0;
+	padding: 0;
+}
+
+#lifeTable {
+	display: inline-block;
+	margin: 0 0 0 0;
+	padding: 0;
+}
+#lifeTable td {
+	width: 27px;
+	height: 27px;
+}
+
+div.nav {
+	padding: 0;
+	display: table;
+}
+ul.nav {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+ul.nav li{
+	display: block;
+	float: left;
+	padding: 0;
+}
+
+ul.nav li a {
+	color: white;
+	display: block;
+	text-decoration: none;
+	width: 100px;
+	padding: 10px 0 10px 0;
+	border-right: 2px solid #E5E5E5;
+	text-align: center;
+	position: relative;
+	background-color: #333333;
+}
+ul.nav li a:hover {
+	background-color: #475264;
+}
+
+#pageLinks {
+	padding: 0;
+	text-align: center;
+}
+#pageLinks table {
+	text-align: center;
+	font-family: 'Oxygen', sans-serif;
+	color: white;
+}
+#links td {
+	width: 30px;
+	height: 30px;
+}
+#pageLinks a {
+	color: white;
+	text-decoration: none;
+}
+.wBoxed {
+	border: 1px solid white;
+	width: 40px;
+	height: 40px;
+}
+#top {
+	width: 60px;
+	text-align: center;
+	float: right;
+	padding: 0;
+}
+
+#pageBody {
+	width: 975px;
+	margin: 0 auto;
+	padding: 0;
+}
+#Entry {
+	margin: 5px 0 0 0; /* 5px separator */
+	padding: 40px 40px 40px 40px;
+	font-family: 'Oxygen', sans-serif;
+	background-color: white;
+}
+#Entry .Title {
+	font-size: 150%;
+}
+#Entry .Date {
+	font-style: italic;
+	text-align: right;
+	font-size: 70%;
+}
+#Entry .Body {
+	padding: 2px 0px 6px 0px;
+}
+#Entry .Body figure {
+	width: 700px;
+	margin: 10px auto 10px auto;
+}
+#Entry .Body figcaption {
+	width: 500px;
+	margin: 5px auto;
+	text-align: center;
+}
+#Entry .Body img {
+	display: block;
+	width: 700px;
+	padding: 0;
+	/*border: 1px solid #2E2633; /*Adds a border with a padding around image*/
+}
+
+#footer {
+	width: 975px;
+	margin: 5px auto 5px auto;
+	text-align: center;
+	font-family: 'Oxygen', sans-serif;
+}
