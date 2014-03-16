@@ -8,9 +8,9 @@ title: Greg Zynda - Home
 		<ul>
 			{% for post in paginator.posts %}
 				<li>
-					<h2><a href="{{ site.baseurl }}{{ post.url }}">{{ post.title }}</a></h2>
+					<h2><a href="{{ post.url }}">{{ post.title }}</a></h2>
 					<p>{{ post.excerpt | remove: '<p>' | remove: '</p>' }}</p>
-					<a href="{{ site.baseurl }}{{ post.url }}">Read more...</a>
+					<a href="{{ post.url }}">Read more...</a>
 					<p style="text-align:right;"><span>{{ post.date | date_to_string }}</span></p>
 				</li>
 			{% endfor %}

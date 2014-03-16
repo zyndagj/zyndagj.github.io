@@ -10,15 +10,15 @@
 		<link href='http://fonts.googleapis.com/css?family=Oxygen' rel='stylesheet' type='text/css'>
 
 		<!-- syntax highlighting CSS -->
-		<link rel="stylesheet" href="{{ site.baseurl }}/css/syntax.css">
+		<link rel="stylesheet" href="/css/syntax.css">
 		<!-- Custom CSS -->
-		<link rel="stylesheet" href="{{ site.baseurl }}/css/main.css">
-		<SCRIPT LANGUAGE="JavaScript" SRC="{{ site.baseurl }}/js/main.js"></SCRIPT>
+		<link rel="stylesheet" href="/css/main.css">
+		<SCRIPT LANGUAGE="JavaScript" SRC="/js/main.js"></SCRIPT>
 	</head>
 	<body>
 		<div class="site">
 			<div class="header" id="banner">
-				<object data="{{ site.baseurl }}/assets/nameThing.svg" type="image/svg+xml" style="height:263px;"></object>
+				<object data="/assets/nameThing.svg" type="image/svg+xml" style="height:263px;"></object>
 			</div>
 			<script type="text/javascript">
 				tableCreate();
@@ -32,7 +32,7 @@
 							{% assign current = 'current' %}
 						{% endif %}
 						<li>
-							<a class="{{ current }}" href="{{ site.baseurl }}{{ link.url }}">{{ link.title }}</a>
+							<a class="{{ current }}" href="{{ link.url }}">{{ link.title }}</a>
 						</li>
 					{% endfor %}
 				</ul>
