@@ -1,0 +1,226 @@
+/*****************************************************************************/
+/*
+/* Common
+/*
+/*****************************************************************************/
+
+/* Global Reset */
+* {
+  margin: 0;
+  padding: 0;
+}
+
+html, body { height: 100%; }
+
+body {
+  background-color: #E5E5E5;
+  font-family: 'Oxygen', sans-serif;
+  /*font-size: small;
+  /*text-align: center;*/
+}
+
+h1, h2 { font-size: 150%;}
+h3, h4, h5, h6 { font-size: 100%;}
+h1 { margin-bottom: 1em; }
+p { margin: 1em 0; }
+
+a         { color: #00a; }
+a:hover   { color: #000; }
+
+/*****************************************************************************/
+/*
+/* Home
+/*
+/*****************************************************************************/
+
+.posts h2 a {
+	color: black;
+	text-decoration: none;
+}
+
+.posts h2 a:link {color: black;}
+.posts h2 a:visited {color: black;}
+.posts h2 a:hover {color: #475264;}
+.posts h2 a:active {color: black;}
+
+.posts ul {
+	list-style: none;
+}
+
+.posts li {
+	margin-top: 5px;
+	padding: 10px 15px;
+	background-color: white;
+}
+
+.posts span {
+	font-style: italic;
+	text-align: right;
+	font-size: 70%;
+}
+
+/*****************************************************************************/
+/*
+/* Site
+/*
+/*****************************************************************************/
+.site {
+  text-align: justify;
+  width: 975px;
+  margin: 0 auto;
+}
+
+.header {
+	height: 263px;
+	margin-top: 5px;
+	background-color: #333333;
+	padding: 7px 0 9px;
+	text-align: center;
+}
+#lifeTable {
+	display: inline-block;
+	margin: 0;
+	padding: 0;
+}
+#lifeTable td {
+	width: 27px;
+	height: 27px;
+}
+
+.footer {
+  margin: 5px auto 5px auto;
+  text-align: center;
+  font-color: white;
+}
+
+/*****************************************************************************/
+/*
+/* Posts
+/*
+/*****************************************************************************/
+
+/* standard */
+.post {
+	margin-top: 5px;
+	padding: 10px 15px;
+	background-color: white;
+}
+	
+.post pre {
+  border: 1px solid #ddd;
+  background-color: #eef;
+  padding: 0 .4em;
+}
+
+.post img {
+	width: 70%;
+	display: block;
+	margin: 0 auto;
+}
+
+.post span {
+	font-style: italic;
+	text-align: right;
+	font-size: 70%;
+}
+
+.post ul, .post ol {
+  margin-left: 1.35em;
+}
+
+.post code {
+  border: 1px solid #ddd;
+  background-color: #eef;
+  padding: 0 .2em;
+}
+
+.post pre code {
+  border: none;
+}
+
+/* terminal */
+.post pre.terminal {
+  border: 1px solid #000;
+  background-color: #333;
+  color: #FFF;
+}
+
+.post pre.terminal code {
+  background-color: #333;
+}
+
+.pagination {
+	/*display: table;*/
+	background-color: #333333;
+	width: 975px;
+	margin: 5px auto 0 auto;
+	padding: 5px 0;
+}
+.pagination td {
+	color: white;
+	text-align: center;
+	height: 25px;
+	width: 25px;
+}
+
+.pagination a {
+	color: white;
+	text-decoration: none;
+}
+
+/*************	Navigation *************/
+nav {
+	display: table;
+	background-color: #333333;
+	width: 975px;
+	margin-top: 5px;
+}
+nav ul {
+	list-style: none;
+}
+nav li{
+	display: block;
+	float: left;
+	padding: 0;
+}
+nav li a {
+	color: white;
+	display: block;
+	text-decoration: none;
+	font-size: 110%;
+	width: 100px;
+	padding: 10px 0 10px 0;
+	border-right: 2px solid #E5E5E5;
+	text-align: center;
+	position: relative;
+	background-color: #333333;
+}
+nav li a:hover {
+	background-color: #475264;
+	color: white;
+}
+.current {
+	pointer-events: none;
+        cursor: default;
+        background-color: #555152;
+}
+
+
+#Entry .Body {
+	padding: 2px 0px 6px 0px;
+}
+#Entry .Body figure {
+	width: 700px;
+	margin: 10px auto 10px auto;
+}
+#Entry .Body figcaption {
+	width: 500px;
+	margin: 5px auto;
+	text-align: center;
+}
+#Entry .Body img {
+	display: block;
+	width: 700px;
+	padding: 0;
+	/*border: 1px solid #2E2633; /*Adds a border with a padding around image*/
+}

@@ -1,58 +1,16 @@
-<!--
-Author: Greg Zynda
+---
+layout: default
+title: Your New Jekyll Site
+---
 
-This work is licensed under the Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License. To view a copy of this license, visit http://creativecommons.org/licenses/by-nc-sa/4.0/deed.en_US.
--->
-<HTML>
-	<head>
-		<title>Greg Zynda :: About</title>
-		<meta name="author" content="Greg Zynda">
-		<meta name="keywords" content="bioinformatics,IU,methylation,epigenetics,hpc,make,hacking">
-		<link href='http://fonts.googleapis.com/css?family=Oxygen' rel='stylesheet' type='text/css'>
-		<link rel="stylesheet" type="text/css" href="main.css">
-		<SCRIPT LANGUAGE="JavaScript" SRC="main.js"></SCRIPT>
-	</head>
-	<body>
-		<div id="banner" class="bBack">
-			<object data="gz.svg" type="image/svg+xml" id="name"></object>
-		</div>
-		<script type="text/javascript">
-			tableCreate();
-			updateTable(MatrixA);
-		</script>
-		<div class="nav bBack">
-			<ul class="nav">
-				<li><a href="index.html">Home</a></li>
-				<li><a href="about.html">About</a></li>
-			</ul>
-		</div>
-		<script type="text/javascript">
-			currentPage();
-		</script>
-		<div id="pageBody">
-			<div id="Entry">
-			<p><img src="images/greg_zynda_350.jpg" width="350" alt="Greg Zynda" align="left", style="margin: 0px 30px 30px 0">
-				I am a Bioinformatics PhD Candidate at Indiana University in <a href="http://www.soic.indiana.edu">The School of Informatics and Computing.</a> I worked as a sequencing analyst for <a href="http://cgb.indiana.edu/">The Center for Genomics and Bioinformatics</a> for three years under <a href="https://www.soic.indiana.edu/people/profiles/tang-haixu.shtml">Haixu Tang</a>, where I learned how to assess the quality, store, manipulate, and analyze data from <a href="http://www.illumina.com">Illumina</a> and other <a href="http://en.wikipedia.org/wiki/DNA_sequencing#Next-generation_methods">next-generation sequencing</a> technology.
-			</p><p>
-				Since the summer of 2013, I have been remotely working on my dissertation from Texas. Luckily, I can conduct my work on all the research servers at SOIC and UITS from my home. While the site is not the most user friendly, I do appreciate all the open access data archived at <a href="http://www.ncbi.nlm.nih.gov/sra">NCBI's SRA.</a>
-			</p><p>
-				In my free time I keep up with programming languages, algorithms, and the open-source movement. Recently, I have been experimenting with <a href="http://www.khronos.org/opencl">OpenCL</a> on mobile platforms like the ARM Chromebook. Beyond my own interests, I hope to leverage current technology to bring bioinformatics computing to consumer hardware.
-			</p>
-			</div>
-		</div>
-	<div id="footer">
-		<p>&copy;2014 Gregory J Zynda.</p>
+<div id="home">
+	<div class="post">
+		<p><img src="assets/greg_zynda_350.jpg" style="width: 300px; height: 300px; margin: 0px 30px 30px 0;" alt="Greg Zynda" align="left">
+		I am a Bioinformatics PhD Candidate at Indiana University in <a href="http://www.soic.indiana.edu">The School of Informatics and Computing.</a> I worked as a sequencing analyst for <a href="http://cgb.indiana.edu/">The Center for Genomics and Bioinformatics</a> for three years under <a href="https://www.soic.indiana.edu/people/profiles/tang-haixu.shtml">Haixu Tang</a>, where I learned how to assess the quality, store, manipulate, and analyze data from <a href="http://www.illumina.com">Illumina</a> and other <a href="http://en.wikipedia.org/wiki/DNA_sequencing#Next-generation_methods">next-generation sequencing</a> technology.
+		</p><p>
+		Since the summer of 2013, I have been remotely working on my dissertation from Texas. Luckily, I can conduct my work on all the research servers at SOIC and UITS from my home. While the site is not the most user friendly, I do appreciate all the open access data archived at <a href="http://www.ncbi.nlm.nih.gov/sra">NCBI's SRA.</a>
+		</p><p>
+		In my free time I keep up with programming languages, algorithms, and the open-source movement. Recently, I have been experimenting with <a href="http://www.khronos.org/opencl">OpenCL</a> on mobile platforms like the ARM Chromebook. Beyond my own interests, I hope to leverage current technology to bring bioinformatics computing to consumer hardware.
+		</p>
 	</div>
-	</body>
-	<script type="text/javascript">
-		var fps = 0.5;
-		var loop = setInterval(function(){
-			step(MatrixA,MatrixB);
-			var tmp = MatrixA;
-			MatrixA = MatrixB;
-			MatrixB = tmp;
-			tmp = null;
-			updateTable(MatrixA);
-		}, 1000/fps);
-	</script>
-</HTML>
+</div>

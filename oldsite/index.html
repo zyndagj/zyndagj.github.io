@@ -1,0 +1,61 @@
+<!--
+Author: Greg Zynda
+
+This work is licensed under the Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License. To view a copy of this license, visit http://creativecommons.org/licenses/by-nc-sa/4.0/deed.en_US.
+-->
+<HTML>
+	<head>
+		<title>Greg Zynda :: Home</title>
+		<meta name="author" content="Greg Zynda">
+		<meta name="keywords" content="bioinformatics,IU,methylation,epigenetics,hpc,make,hacking">
+		<link href='http://fonts.googleapis.com/css?family=Oxygen' rel='stylesheet' type='text/css'>
+		<link rel="stylesheet" type="text/css" href="main.css">
+		<SCRIPT LANGUAGE="JavaScript" SRC="main.js"></SCRIPT>
+	</head>
+	<body>
+		<div id="banner" class=bBack>
+			<object data="gz.svg" type="image/svg+xml" id="name"></object>
+		</div>
+		<script type="text/javascript">
+			tableCreate();
+			updateTable(MatrixA);
+		</script>
+		<div class="nav bBack">
+			<ul class="nav">
+				<li><a href="index.html">Home</a></li>
+				<li><a href="about.html">About</a></li>
+			</ul>
+		</div>
+		<script type="text/javascript">
+			currentPage();
+		</script>
+		<div id="pageBody">
+		</div>
+		<div id="pageLinks" class="bBack">
+			<table width="100%" border="0"><tr>
+				<td width="50"></td>
+				<td><center>
+					<table border="0">
+						<tr id="links"></tr>
+					</table>
+				</center></td>
+				<td width="50"><a href=#>Top</a></td>
+			</tr></table>
+		</div>
+		<script type="text/javascript">writeEntries();</script>
+		<div id="footer">
+			<p>&copy;2014 Gregory J Zynda.</p>
+		</div>
+	</body>
+	<script type="text/javascript">
+		var fps = 0.5;
+		var loop = setInterval(function(){
+			step(MatrixA,MatrixB);
+			var tmp = MatrixA;
+			MatrixA = MatrixB;
+			MatrixB = tmp;
+			tmp = null;
+			updateTable(MatrixA);
+		}, 1000/fps);
+	</script>
+</HTML>
