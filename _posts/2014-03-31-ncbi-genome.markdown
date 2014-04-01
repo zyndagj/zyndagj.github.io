@@ -17,4 +17,4 @@ I ended up finding the [GENOME_REPORTS](ftp://ftp.ncbi.nlm.nih.gov/genomes/GENOM
 
 ![completed genomes](/assets/genome_completed.png)
 
-Since I wanted these values to be reflect the current data whenever it was updated, I decided to pull each of these files using python's httplib. My resulting script with instructions can be found at my github project page [https://github.com/zyndagj/ncbi_genomes].
+Since I wanted these values to be reflect the current data whenever it was updated, I decided to pull each of these files using python's httplib. My resulting script with instructions can be found at my github project page [ncbi_genomes](https://github.com/zyndagj/ncbi_genomes).
