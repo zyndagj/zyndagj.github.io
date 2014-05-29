@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<!--
+FASTQA-JS v0.1
+
+(c) 2014 Gregory J. Zynda
+
+License: http://creativecommons.org/licenses/by-nc/3.0/
+-->
+<html lang="en">
+<head>
+	<meta charset=utf-8>
+	<title>FASTQA-JS</title>
+	<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css">
+	<script src="http://code.jquery.com/jquery-1.10.2.js"></script>
+	<script src="http://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
+	<script src="http://code.highcharts.com/highcharts.js"></script>
+	<script src="http://code.highcharts.com/highcharts-more.js"></script>
+	<script src="http://code.highcharts.com/modules/exporting.js"></script>
+	<link href="http://fonts.googleapis.com/css?family=Oxygen" rel="stylesheet" type="text/css">
+</head>
+<body>
+<h1 id="title">FASTQA-JS: JavaScript FASTQ Quality Analysis</h1>
+<style>
+	body {
+		margin: 0;
+		font-family: 'Oxygen', sans-serif;
+	}
+	#title {
+		padding: 20px 50px;
+		background-color: #333333;
+		color: white;
+		margin: 0 0 20px 0;
+	}
+	#holder {
+		border: 10px dashed #ccc;
+		width: 400px;
+		height: 400px;
+		margin: 30px auto;
+	}
+	#holder.hover {
+		border: 10px dashed #333;
+	}
+	#holder p {
+		margin: 170px 30px 0px 30px;
+		text-align: center;
+	}
+	#noSupport {
+		color: red;
+	}
+	#progress {
+		display: none;
+		width: 400px;
+		margin: 30px auto;
+		text-align: center;
+	}
+	#progress p {
+		margin: 170px 30px 15px 30px;
+	}
+	#figure {
+		display: none;
+		height: 400px;
+		margin: auto;
+		min-width: 400px;
+	}
+	.another {
+		-moz-box-shadow:inset 0px 1px 0px 0px #ffffff;
+		-webkit-box-shadow:inset 0px 1px 0px 0px #ffffff;
+		box-shadow:inset 0px 1px 0px 0px #ffffff;
+		background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #ededed), color-stop(1, #dfdfdf) );
+		background:-moz-linear-gradient( center top, #ededed 5%, #dfdfdf 100% );
+		filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#ededed', endColorstr='#dfdfdf');
+		background-color:#ededed;
+		text-indent:0;
+		border:1px solid #dcdcdc;
+		display:inline-block;
+		color:#777777;
+		font-family:Arial;
+		font-size:16px;
+		font-weight:bold;
+		font-style:normal;
+		height:37px;
+		line-height:37px;
+		width:131px;
+		text-decoration:none;
+		text-align:center;
+		text-shadow:1px 1px 0px #ffffff;
+	}
+	.another:hover {
+		background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #dfdfdf), color-stop(1, #ededed) );
+		background:-moz-linear-gradient( center top, #dfdfdf 5%, #ededed 100% );
+		filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#dfdfdf', endColorstr='#ededed');
+		background-color:#dfdfdf;
+	}
+	.another:active {
+		position:relative;
+		top:1px
+	}
+	#another {
+		display: none;
+		margin: 20px auto;
+		text-align: center;
+	}
+</style>
+<p style="margin: 30px 50px 10px 50px;">FASTQA-JS is a web tool built completely in JavaScript so researchers can assess the quality of their <a href="http://en.wikipedia.org/wiki/FASTQ_format">FASTQ</a> files without installing extra programs or waiting for the large files to upload to another server. When a FASTQ file is dragged and dropped into the outlined box, they will be analyzed and a boxplot summery of quality scores will be displayed using the <a href="http://www.highcharts.com/">highcharts</a> api.</p>
+<p style="margin: 10px 50px 30px 50px;">Please check out more of my work at <a href="http://www.gregoryzynda.com">www.gregoryzynda.com</a>.</p>
+<div id="holder">
+	<p>Drag and drop an uncompressed FASTQ file for base quality score analysis.</p>
+</div> 
+
+<div id="progress">
+	<p>Processing</p>
+	<div id="progressbar"></div>
+</div>
+<div id="figure"></div>
+<div id="another">
+	<a onclick="another();" href="javascript:void(0);" class="another">Start Over</a>
+</div>
+<script>
+function qualMatrix(readLen) {
+	var M = new Array(readLen);
+	var maxQual = 105; //max ascii value for fastq (0-104)
+	for(var i=0; i<readLen; i++) {
+		M[i] = new Array(maxQual);
+		for(var j = 0; j<maxQual; j++) {
+			M[i][j] = 0;
+		}
+	}
+	return M;
+}
+
+function printQuals(qualityString) {
+	var arrLen = qualityString.length;
+	var qualValues = new Array(arrLen);
+	for(var i=0; i<arrLen; i++) {
+		qualValues[i] = qualityString.charCodeAt(i);
+	}
+	console.log(qualValues);
+}
+
+function updateMatrix(qMatrix, read) {
+	for(var i=0; i<read.length; i++) {
+		qMatrix[i][read.charCodeAt(i)] += 1;
+	}
+}
+
+function arraySum(array) {
+	return array.reduce(function(a,b) {
+		return a+b;
+	});
+}
+
+function percentile(array, p, total) {
+	var count = 0;
+	for(var i=0; i<array.length; i++) {
+		count += array[i];
+		if(count/total >= p) {
+			return i;
+		}
+	}
+}
+
+function computeBoxData(array) {
+	var count = arraySum(array);
+	var median = percentile(array, 1/2, count);
+	//console.log("median: "+median);
+	var q1 = percentile(array, 1/4, count);
+	var q3 = percentile(array, 3/4, count);
+	var iqr = q3-q1;
+	var lowW = q1-1.5*iqr;
+	var upW = q3+1.5*iqr;
+	return [lowW, q1, median, q3, upW];
+}
+
+function parseFile(file){
+	if(file.name.split('.')[1] != "fastq" && file.name.split('.')[1] != "fq") {
+		console.log("Please select a fastq file");
+		return true;
+	}
+    var chunkSize = 1500;
+    var fileSize = (file.size - 1);
+	var line = 0;
+	var qualString = "";
+	var start = 0;
+	var qMatrix;
+	var first = true;
+	var parseBlock = false;
+	var readCount = 0;
+
+    var parseChunk = function(text){
+		//console.log("chunk: "+text.target.result);
+		var splitResult = text.target.result.split(/\r?\n/); //split at new lines
+		for(var j=0; j<splitResult.length; j++) {
+			if(j > 0) {
+				if(line < 3) {
+					line++;
+				} else {
+					if(first) {
+						qMatrix = qualMatrix(qualString.length);
+						first = false;
+					}
+					// finished a quality line
+					updateMatrix(qMatrix, qualString);
+					qualString = ""; //reset quality string
+					line = 0; //reset line count
+					readCount++;
+				}
+			}
+			if(line == 3) {
+				qualString += splitResult[j];
+			}
+		}
+		if(start >= file.size) {
+			//console.log(readCount+" reads"); //total reads in file
+			done();
+		} else {
+			nextChunk();
+		}
+    };
+	
+	function nextChunk() {
+		reader.readAsText(file.slice(start,start+chunkSize)); //read next blob
+		$( "#progressbar" ).progressbar({ //update progress bar
+			value: Math.floor(start/file.size*100)
+		});
+		start = start+chunkSize; //update starting point
+	}
+	
+	function done() {
+		$('#progress').hide();
+		$('#figure').show();
+		$('#another').show();
+		var boxData = new Array(qMatrix.length);
+		for(var i=0; i<qMatrix.length; i++) {
+			boxData[i] = computeBoxData(qMatrix[i]);
+		}
+		$('#figure').highcharts({
+			chart: {type:'boxplot'},
+			title: {text:'Read Quality Summary'},
+			legend: {enabled: false},
+			xAxis: {title: {text: "Base Index (bp)"},
+				tickInterval: 1,
+				startOnTick: true,
+				min: 0},
+			yAxis: {title: {text:'Quality Score'}},
+			series: [{name: 'observations',
+				data: boxData}]
+		});
+	}
+	
+	var reader = new FileReader();
+	reader.onload = parseChunk;
+	$('#holder').hide();
+	$('#progress').show();
+	nextChunk();
+	return false;
+}
+</script>
+<script>
+var holder = document.getElementById('holder');
+
+if (typeof window.FileReader === 'undefined') {
+	holder.innerHTML = '<p id="noSupport">Not supported with your browser</p>';
+	return true;
+}
+ 
+holder.ondragover = function () {
+	this.className = 'hover';
+	return false;
+};
+holder.ondragend = function () {
+	this.className = '';
+	return false;
+};
+holder.ondragleave = function() {
+	this.className = '';
+	return false;
+}
+holder.ondrop = function (e) {
+	this.className = '';
+	e.preventDefault();
+	var file = e.dataTransfer.files[0];
+	parseFile(file);
+};
+
+another = function() {
+	$('#figure').hide();
+	$('#holder').show();
+	$('#another').hide();
+}
+</script>
+</body>
+</html>
