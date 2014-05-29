@@ -5,4 +5,4 @@ date:   2014-05-29
 categories: fastq javascript
 ---
 
-I just finished making [FASTQ-JS](http://www.gregoryzynda.com/fastqa-js.html). A tutorial and explanation will be posted shortly.
+I just finished making [FASTQ-JS](/fastqa-js.html). A tutorial and explanation will be posted shortly.
