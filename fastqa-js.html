@@ -174,7 +174,7 @@ function computeBoxData(array) {
 	var iqr = q3-q1;
 	var lowW = q1-1.5*iqr;
 	var upW = q3+1.5*iqr;
-	return [lowW+offset, q1+offset, median+offset, q3+offset, upW+offset];
+	return [Math.max(lowW+offset,0), q1+offset, median+offset, q3+offset, Math.min(upW+offset,41)];
 }
 
 function parseFile(file){
