@@ -163,14 +163,14 @@ function percentile(array, p, total) {
 function computeBoxData(array) {
 	var count = arraySum(array);
 	var median = percentile(array, 1/2, count);
-	if(median > 73) { // determine offset
+	//console.log("median: "+median);
+	var q1 = percentile(array, 1/4, count);
+	var q3 = percentile(array, 3/4, count);
+	if(q3 > 74) { // determine offset
 		var offset = -64;
 	} else {
 		var offset = -33;
 	}
-	//console.log("median: "+median);
-	var q1 = percentile(array, 1/4, count);
-	var q3 = percentile(array, 3/4, count);
 	var iqr = q3-q1;
 	var lowW = q1-1.5*iqr;
 	var upW = q3+1.5*iqr;
