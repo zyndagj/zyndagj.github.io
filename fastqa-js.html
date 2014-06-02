@@ -182,7 +182,7 @@ function parseFile(file){
 		console.log("Please select a fastq file");
 		return true;
 	}
-	var chunkSize = 1500;
+	var chunkSize = 500000;
 	var fileSize = (file.size - 1);
 	var line = 0;
 	var qualString = "";
