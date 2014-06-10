@@ -154,6 +154,7 @@ a:hover   { color: #000; }
 
 .post table th {
 	background-color: #333333;
+	font-color: white;	
 }
 
 .post table td {
