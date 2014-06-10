@@ -144,9 +144,20 @@ a:hover   { color: #000; }
 	border-collapse: collapse;
 }
 
+.post table tbody tr:nth-child(odd) {
+   background-color: #E5E5E5;
+}
+
 .post table td, th {
-	border: 1px solid;
 	padding: 3px 8px;
+}
+
+.post table th {
+	background-color: #333333;
+}
+
+.post table td {
+	border: 1px solid white;
 }
 
 /* terminal */
