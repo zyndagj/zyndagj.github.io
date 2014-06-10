@@ -141,7 +141,11 @@ a:hover   { color: #000; }
 /* tables */
 .post table {
 	margin: auto;
-	border: 1px;
+}
+
+.post table td {
+	border: solid;
+	padding: 2px 5px;
 }
 
 /* terminal */
