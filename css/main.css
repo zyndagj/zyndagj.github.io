@@ -149,12 +149,13 @@ a:hover   { color: #000; }
 }
 
 .post table td, th {
-	padding: 3px 8px;
+	padding: 5px 10px;
 }
 
 .post table th {
 	background-color: #333333;
-	color: white;	
+	color: white;
+	font-weight: normal;
 }
 
 .post table td {

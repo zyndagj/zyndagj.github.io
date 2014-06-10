@@ -6,23 +6,24 @@ categories: bsmap methylation asm
 ---
 My preffered program for aligning bisulfite-sequencing reads to a reference is [BSMAP](https://sites.google.com/a/brown.edu/bioinformatics-in-biomed/bsmap-for-methylation). BSMAP is based on SOAP and aligns reads fairly quickly considering how many mismatches the bisulfite treatment introduces into the reads. BSMAP stands out against other aligners because it comes with the methratio.py script. This script parses the read alignment files and outputs an easily interpreted table of methylation frequencies, which is somewhat similar to VCF.
 
-	chr     pos     strand  context ratio   eff_CT_count    C_count CT_count        rev_G_count     rev_GA_count    CI_lower        CI_upper
-	Chr1    34      -       CTGAA   0.200   5.00    1       5       0       0       0.036   0.624
-	Chr1    80      -       ATGAA   0.000   6.00    0       6       2       2       0.000   0.390
-	Chr1    93      +       TACCT   0.400   5.00    2       5       7       7       0.118   0.769
-	Chr1    94      +       ACCTA   0.000   5.00    0       5       7       7       -0.000  0.434
-	Chr1    100     +       TTCCC   0.000   5.00    0       5       7       7       -0.000  0.434
-	Chr1    101     +       TCCCT   0.000   5.00    0       5       7       7       -0.000  0.434
-	Chr1    102     +       CCCTA   0.000   6.00    0       6       7       7       0.000   0.390
-	Chr1    107     +       AACCC   0.143   7.00    1       7       7       7       0.026   0.513
-	Chr1    108     +       ACCCG   0.875   8.00    7       8       7       7       0.529   0.978
+| chr | pos | strand | context | ratio | eff_CT_count | C_count | CT_count | rev_G_count | rev_GA_count | CI_lower | CI_upper |
+|:---:|:---:|:------:|:-------:|:-----:|:------------:|:-------:|:--------:|:-----------:|:------------:|:--------:|:--------:|
+| Chr1 | 34 | - | CTGAA | 0.200 | 5.00 | 1 | 5 | 0 | 0 | 0.036 | 0.624 |
+| Chr1 | 80 | - | ATGAA | 0.000 | 6.00 | 0 | 6 | 2 | 2 | 0.000 | 0.390 |
+| Chr1 | 93 | + | TACCT | 0.400 | 5.00 | 2 | 5 | 7 | 7 | 0.118 | 0.769 |
+| Chr1 | 94 | + | ACCTA | 0.000 | 5.00 | 0 | 5 | 7 | 7 | -0.000 | 0.434 |
+| Chr1 | 100 | + | TTCCC | 0.000 | 5.00 | 0 | 5 | 7 | 7 | -0.000 | 0.434 |
+| Chr1 | 101 | + | TCCCT | 0.000 | 5.00 | 0 | 5 | 7 | 7 | -0.000 | 0.434 |
+| Chr1 | 102 | + | CCCTA | 0.000 | 6.00 | 0 | 6 | 7 | 7 | 0.000 | 0.390 |
+| Chr1 | 107 | + | AACCC | 0.143 | 7.00 | 1 | 7 | 7 | 7 | 0.026 | 0.513 |
+| Chr1 | 108 | + | ACCCG | 0.875 | 8.00 | 7 | 8 | 7 | 7 | 0.529 | 0.978 |
 
 My current project on allele specific methylation requires the actual reads instead of the frequency, so I needed to figure out what information is used to arrive at these methylation frequencies. To start off, I run BSMAP with the following parameters:
 
 	bsmap -a read1.fq -b read2.fq -d reference.fa -o out.bam -w 2 -q 20 -z 33 -p 1 -r 0
 
-| flag | value | description |
-| ---- | ----- | ----------- |
+| Flag | Value | Description |
+|:----:|:-----:| ----------- |
 | -w | 2 | Only outputs the two equally best hits (multiply mapping) |
 | -q | 20 | Trims the tails of reads when quality is below a threshold of 20 |
 | -z | 33 | Quality score format |
@@ -33,8 +34,8 @@ I use the redundant combination of `-w` and `-r` because I'm not sure if the uni
 
 	methratio.py -o out_methratio.txt -d reference.fa -u -p -z -r -m 5 in.bam
 
-| flag | value | description |
-| ---- | ----- | ----------- |
+| Flag | Value | Description |
+|:----:|:-----:| ----------- |
 | -u |  | Only uses unique hits (redundant) |
 | -p |  | Only uses reads mapped in a propper pair |
 | -z |  | Report locations with zero-methylation (only T's reported) |
@@ -64,10 +65,10 @@ samtools view -f 2 tmp_rmdup.bam | wc -l
 
 This method filtered out many of the extra reads, but I still had to remove 5 more from the set. Looking at the SAM records for all 13 reads made me realize that some of the reads were comming from the opposite strand of the CHG motif I was targeting, so they couldn't contribute any information about the methylation of the cytosine at 108. BSMAP keeps track of the strand information with the ZS:Z field.
 
-	++: forward strand of Watson of reference (BSW)
-	+-: reverse strand of Watson of reference (BSWC)
-	-+: forward strand of Crick of reference (BSC)
-	--: reverse strand of Crick of reference (BSCC)
+`++: forward strand of Watson of reference (BSW)
++-: reverse strand of Watson of reference (BSWC)
+-+: forward strand of Crick of reference (BSC)
+--: reverse strand of Crick of reference (BSCC)`
 
 From the 13 reads remaining, I filtered out any that came from the Crick of the reference (-) and was left with 8 reads. To make sure these were the reads I was looking for, I made a quick visualization of the results in samtools tview.
 
