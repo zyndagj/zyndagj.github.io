@@ -129,14 +129,14 @@ a:hover   { color: #000; }
 }
 
 .post code {
-	border: 1px solid #ddd;
-	background-color: #eef;
-	padding: 0 .2em;
-	font-size: 120%;
+  border: 1px solid #ddd;
+  background-color: #eef;
+  padding: 0 .2em;
 }
 
 .post pre code {
-  border: none;
+	border: none;
+	font-size: 125%;
 }
 
 /* terminal */
