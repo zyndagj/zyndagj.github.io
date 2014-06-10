@@ -1,5 +1,5 @@
 name: Greg Zynda
-markdown: redcarpet2
+markdown: maruku
 pygments: true
 #destination: /u/gjzynda/html-pub/served
 #baseurl: /gjzynda/served
