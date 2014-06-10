@@ -140,7 +140,7 @@ a:hover   { color: #000; }
 
 /* tables */
 .post table {
-	margin: auto;
+	margin: 16px auto;
 	border-collapse: collapse;
 }
 
