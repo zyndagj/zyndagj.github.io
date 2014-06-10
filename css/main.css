@@ -144,9 +144,9 @@ a:hover   { color: #000; }
 	border-collapse: collapse;
 }
 
-.post table td {
+.post table td, th {
 	border: 1px solid;
-	padding: 2px 5px;
+	padding: 3px 8px;
 }
 
 /* terminal */
