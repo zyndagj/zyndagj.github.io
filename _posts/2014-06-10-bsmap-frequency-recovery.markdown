@@ -48,7 +48,8 @@ I started investigating the results by looking at base 108 from Chromosome 1 in 
 
 This record shows that of the reads overlapping base 108 in the reference, 7 are C and 1 is T. This means the final methylation frequency is 1/8. I looked at the corresponding bam file to see what reads overlapped with base 108.
 
-{% highlight bash %}$ samtools view in.bam Chr1:108-108 | wc -l
+{% highlight bash %}
+$ samtools view in.bam Chr1:108-108 | wc -l
 55
 {% endhighlight %}
 
