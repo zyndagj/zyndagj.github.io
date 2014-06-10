@@ -48,7 +48,7 @@ I started investigating the results by looking at base 108 from Chromosome 1 in 
 
 This record shows that of the reads overlapping base 108 in the reference, 7 are C and 1 is T. This means the final methylation frequency is 1/8. I looked at the corresponding bam file to see what reads overlapped with base 108.
 
-{% highlight shell %}
+{% highlight bash %}
 $ samtools view in.bam Chr1:108-108 | wc -l
 55
 {% endhighlight %}
@@ -65,10 +65,10 @@ samtools view -f 2 tmp_rmdup.bam | wc -l
 
 This method filtered out many of the extra reads, but I still had to remove 5 more from the set. Looking at the SAM records for all 13 reads made me realize that some of the reads were comming from the opposite strand of the CHG motif I was targeting, so they couldn't contribute any information about the methylation of the cytosine at 108. BSMAP keeps track of the strand information with the ZS:Z field.
 
-`++: forward strand of Watson of reference (BSW)
-+-: reverse strand of Watson of reference (BSWC)
--+: forward strand of Crick of reference (BSC)
---: reverse strand of Crick of reference (BSCC)`
+   ++: forward strand of Watson of reference (BSW)
+   +-: reverse strand of Watson of reference (BSWC)
+   -+: forward strand of Crick of reference (BSC)
+   --: reverse strand of Crick of reference (BSCC)
 
 From the 13 reads remaining, I filtered out any that came from the Crick of the reference (-) and was left with 8 reads. To make sure these were the reads I was looking for, I made a quick visualization of the results in samtools tview.
 
