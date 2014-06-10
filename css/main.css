@@ -136,7 +136,12 @@ a:hover   { color: #000; }
 
 .post pre code {
 	border: none;
-	font-size: 140%;
+}
+
+/* tables */
+.post table {
+	margin: auto;
+	border: 1px;
 }
 
 /* terminal */
