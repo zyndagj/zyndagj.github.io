@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Functions on a Google Documents Table"
-date:   2014-05-09
+date:   2014-06-09
 categories: webdev google docs script
 ---
 
