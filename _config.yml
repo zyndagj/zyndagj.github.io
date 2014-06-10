@@ -1,12 +1,14 @@
 name: Greg Zynda
 markdown: redcarpet
+redcarpet:
+   extensions: ["no_intra_emphasis", "fenced_code_blocks", "autolink", "tables", "with_toc_data"]
 pygments: true
 #destination: /u/gjzynda/html-pub/served
 #baseurl: /gjzynda/served
 paginate: 5
 navigation:
-  title: Home
-  url: /index.html
-  title: About
-  url: /about.html
+ - title: Home
+   url: /index.html
+ - title: About
+   url: /about.html
 exclude: [oldsite]
