@@ -6,7 +6,7 @@ categories: bsmap methylation asm
 ---
 My preffered program for aligning bisulfite-sequencing reads to a reference is [BSMAP](https://sites.google.com/a/brown.edu/bioinformatics-in-biomed/bsmap-for-methylation). BSMAP is based on SOAP and aligns reads fairly quickly considering how many mismatches the bisulfite treatment introduces into the reads. BSMAP stands out against other aligners because it comes with the methratio.py script. This script parses the read alignment files and outputs an easily interpreted table of methylation frequencies, which is somewhat similar to VCF.
 
-| chr | pos | strand | context | ratio | eff_CT_count | C_count | CT_count | rev_G_count | rev_GA_count | CI_lower | CI_upper |
+| chr | pos | strand | context | ratio | eff_CT | C | CT | rev_G | rev_GA | CI_lower | CI_upper |
 |:---:|:---:|:------:|:-------:|:-----:|:------------:|:-------:|:--------:|:-----------:|:------------:|:--------:|:--------:|
 | Chr1 | 34 | - | CTGAA | 0.200 | 5.00 | 1 | 5 | 0 | 0 | 0.036 | 0.624 |
 | Chr1 | 80 | - | ATGAA | 0.000 | 6.00 | 0 | 6 | 2 | 2 | 0.000 | 0.390 |
