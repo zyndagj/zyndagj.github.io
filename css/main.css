@@ -133,6 +133,10 @@ a:hover   { color: #000; }
   background-color: #eef;
 }
 
+.post code .javascript {
+	font-size: 120%;
+}
+
 .post pre code {
 	border: none;
 }
