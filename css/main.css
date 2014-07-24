@@ -81,6 +81,7 @@ a:hover   { color: #000; }
 	display: inline-block;
 	margin: 0;
 	padding: 0;
+	vertical-align: top;
 }
 #lifeTable td {
 	width: 27px;
