@@ -15,6 +15,7 @@ html, body { height: 100%; }
 body {
   background-color: #E5E5E5;
   font-family: 'Oxygen', sans-serif;
+  font-size: medium;
   /*font-size: small;
   /*text-align: center;*/
 }
@@ -56,7 +57,7 @@ a:hover   { color: #000; }
 .posts span {
 	font-style: italic;
 	text-align: right;
-	font-size: 70%;
+	/*font-size: 70%;*/
 }
 
 /*****************************************************************************/
@@ -122,7 +123,7 @@ a:hover   { color: #000; }
 .post span {
 	font-style: italic;
 	text-align: right;
-	font-size: 70%;
+	/*font-size: 70%;*/
 }
 
 .post ul, .post ol {
@@ -135,7 +136,7 @@ a:hover   { color: #000; }
 }
 
 .javascript {
-	font-size: 120%;
+	/*font-size: 120%;*/
 }
 
 .post pre code {
@@ -215,7 +216,7 @@ nav li a {
 	color: white;
 	display: block;
 	text-decoration: none;
-	font-size: 110%;
+	/*font-size: 110%;*/
 	width: 100px;
 	padding: 10px 0 10px 0;
 	border-right: 2px solid #E5E5E5;
