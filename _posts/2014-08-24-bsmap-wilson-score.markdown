@@ -9,7 +9,13 @@ I [previously discussed]({% post_url 2014-06-10-bsmap-frequency-recovery %}) wha
 
 I started by first determining what confidence interval BSMAP uses. Their original publication does not mention this, so I went though the `methratio.py` code and found they used the Wilson score interval [1]. The same confidence interval used for ranking reddit posts ([link](http://amix.dk/blog/post/19588) - website contains an incorrect implementation).
 
+$$\frac{1}{1+\frac{z^2_{\alpha/2}}{n}}\left(\hat{p}+\frac{z^{2}_{\alpha/2}}{2n} \pm z_{\alpha/2} \sqrt{\frac{\hat{p}(1-\hat{p})}{n}+\frac{z^2_{\alpha/2}}{4n^2}}\right)$$
+
+Where \(\hat{p}\) is the observed ratio of methylation and \(z_{\alpha/2}\) is the \(1-\alpha/2\) quantile of the normal distribution, and n is the number of samples (CT).
+
 As a sanity check, I reimplemented the confidence interval in python to make sure I arrived at the same values BSMAP returns.
+
+
 
 | chr | pos | strand | context | ratio | eff_CT | C | CT | rev_G | rev_GA | CI_lower | CI_upper |
 |:---:|:---:|:------:|:-------:|:-----:|:------------:|:-------:|:--------:|:-----------:|:------------:|:--------:|:--------:|
@@ -22,8 +28,6 @@ As a sanity check, I reimplemented the confidence interval in python to make sur
 | Chr1 | 102 | + | CCCTA | 0.000 | 6.00 | 0 | 6 | 7 | 7 | 0.000 | 0.390 |
 | Chr1 | 107 | + | AACCC | 0.143 | 7.00 | 1 | 7 | 7 | 7 | 0.026 | 0.513 |
 | Chr1 | 108 | + | ACCCG | 0.875 | 8.00 | 7 | 8 | 7 | 7 | 0.529 | 0.978 |
-
-$$\hat{p}+z^{2}_{\alpha/2}$$
 
 BSMAP confidence interval
 
@@ -39,6 +43,3 @@ BSMAP uses this to look at the confidence of the methylation call
 
 R implementation:
 http://math.furman.edu/~dcs/courses/math47/R/library/Hmisc/html/binconf.html
-
-Python Code
-
