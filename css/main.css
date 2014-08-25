@@ -161,6 +161,7 @@ a:hover   { color: #000; }
 	background-color: #333333;
 	color: white;
 	font-weight: normal;
+	border: 1px solid white;
 }
 
 .post table td {
