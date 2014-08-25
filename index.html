@@ -11,7 +11,7 @@ title: Greg Zynda - Home
 					<h2><a href="{{ post.url }}">{{ post.title }}</a></h2>
 					<p>{{ post.excerpt | remove: '<p>' | remove: '</p>' }}</p>
 					<a href="{{ post.url }}">Read more...</a>
-					<p style="text-align:right;"><span>{{ post.date | date_to_string }}</span></p>
+					<p><span id="date">{{ post.date | date_to_string }}</span></p>
 				</li>
 			{% endfor %}
 		</ul>
