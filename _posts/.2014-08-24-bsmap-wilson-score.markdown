@@ -13,9 +13,8 @@ I started by first determining what confidence interval BSMAP uses. Their origin
 
 $$\frac{1}{1+\frac{z^2_{\alpha/2}}{n}}\left(\hat{p}+\frac{z^{2}_{\alpha/2}}{2n} \pm z_{\alpha/2} \sqrt{\frac{\hat{p}(1-\hat{p})}{n}+\frac{z^2_{\alpha/2}}{4n^2}}\right)$$
 
-Where \\(\hat{p}\\) is the observed ratio of methylation and \(z_{\alpha/2}\) is the \(1-\alpha/2\) quantile of the normal distribution, and n is the number of samples (CT).
+Where \\(\hat{p}\\) is the observed ratio of methylation and \\(z_{\alpha/2}\\) is the \\(1-\alpha/2\\) quantile of the normal distribution, and \\(n\\) is the number of samples (CT). As a sanity check, I reimplemented the confidence interval in python.
 
-As a sanity check, I reimplemented the confidence interval in python to make sure I arrived at the same values BSMAP returns.
 
 
 
