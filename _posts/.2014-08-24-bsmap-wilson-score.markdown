@@ -40,6 +40,9 @@ Sources:
 Nice explanation by Evan Miller
 http://www.evanmiller.org/how-not-to-sort-by-average-rating.html
 
+Scores for differential
+http://corplingstats.wordpress.com/2013/05/20/comparing-frequencies/
+
 BSMAP uses this to look at the confidence of the methylation call
 
 R implementation:
