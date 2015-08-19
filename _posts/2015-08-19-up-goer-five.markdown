@@ -13,7 +13,7 @@ I decided to answer the call of [http://splasho.com/upgoer5/](http://splasho.com
   </a>
 </div>
 
-and attempt to explain some of the analysis of one of my current plant genome research projects at TACC.
+and attempt to explain my method for replication timing classification from one of my [plant genome research projects](http://biochem.ncsu.edu/faculty/hanley-bowdoin/Pages/DNAreplication.html) at TACC.
 
 ---
 
