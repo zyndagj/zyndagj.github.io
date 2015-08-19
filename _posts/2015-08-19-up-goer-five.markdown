@@ -7,7 +7,9 @@ categories: TACC research replication
 
 I decided to answer the call of http://splasho.com/upgoer5/, which is inspired by XKCD's [Up Goer Five](http://xkcd.com/1133/)
 
-<img src="http://imgs.xkcd.com/comics/up_goer_five.png" style="position:absolute;clip:rect(0px,auto,500px,0px);">
+<div style="width:840px; height:350px;">
+<img src="http://imgs.xkcd.com/comics/up_goer_five.png" style="position:absolute;clip:rect(0px,840px,350px,0px);">
+</div>
 
 and attempt to explain one of my current research projects at TACC.
 
