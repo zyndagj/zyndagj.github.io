@@ -5,7 +5,7 @@ date:   2015-08-19
 categories: TACC research replication
 ---
 
-I decided to answer the call of http://splasho.com/upgoer5/, which is inspired by XKCD's [Up Goer Five](http://xkcd.com/1133/)
+I decided to answer the call of (http://splasho.com/upgoer5/), which is inspired by XKCD's [Up Goer Five](http://xkcd.com/1133/)
 
 <div style="width:840px; height:350px;">
   <a href="http://xkcd.com/1133/">
