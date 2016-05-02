@@ -104,7 +104,8 @@ $ ls *.fasta > input.fofn
 
 Next, alter the Falcon configuration file below to include your TACC or XSEDE allocation (`TACC_ALLOCATION`), so it can submit jobs to our SLURM scheduler.
 
-####File - job.cfg
+#### File - job.cfg
+
 ```shell
 [General]
 # list of files of the initial bas.h5/fasta files                                           
