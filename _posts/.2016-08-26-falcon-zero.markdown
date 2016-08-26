@@ -1,0 +1,137 @@
+---
+layout: post
+title:  "Falcon-Zero: Maximum Velocity"
+date:   2016-08-26
+categories: TACC assembly pacificbiosciences nsf stampede CyVerse
+---
+
+In my previous post, I showed you how to complete an assembly of the E. coli genome in 54 minutes using Stampede at TACC and CyVerse. While this is good, it is fairly slow for a distributed program that is allowed to use up to 30 nodes. To reduce the overall [wall-clock time](https://en.wikipedia.org/wiki/Wall-clock_time) it takes for an assembly, Falcon submits every task as a batch job to a scheduler. While submitting multiple jobs to the schedulers allows for concurrent execution, wait time increases based on availability in that system. Our systems, which are available to local UT-system, national NSF, and global collaborating researchers, are often oversubscribed and subject to fairly long waiting times for execution. This renders any assumption that hundreds or thousands of job submissions can be run to accomplish a given task totally impractical. Most large systems give higher priority to multi-node jobs in contrast to the single-node jobs falcon produces.
+
+To get the best runtime possible while also demonstrating Falcon’s ability to distribute jobs, I ran the original E. coli assembly job at night. Most of the users on Stampede work (and submit their jobs) during the day, so the system has the shortest wait times after most of the short jobs have already completed. Even with these ideal conditions, there was still significant overhead from SLURM because a [prolog](http://slurm.schedmd.com/prolog_epilog.html) is run before each job to prepare the user environment and ensure the system is running normally before any time is charged.
+
+To reduce the run times for these tasks, I developed the [vQ](https://github.com/zyndagj/vQ), a virtual queue for multi-node jobs that will dynamically balance the execution of tasks issued with normal SLURM commands across a pre-allocated set of computing nodes on a shared resource. vQ is a drop-in solution that overloads all SLURM queue commands, without requiring any changes to the Falcon source code. This removes any wait time between tasks, all while handling I/O redirection and return codes.
+
+Using the same job config as before
+
+```shell
+[General]
+input_fofn = input.fofn
+input_type = raw
+length_cutoff = 12000
+length_cutoff_pr = 12000
+
+use_tmpdir = True
+
+job_type = SLURM
+jobqueue = normal
+allocation = TACC_ALLOCATION
+ncores = 16
+
+sge_option_da  = -n %(ncores)s -t 05:00:00 -A %(allocation)s -p %(jobqueue)s
+sge_option_la  = -n %(ncores)s -t 05:00:00 -A %(allocation)s -p %(jobqueue)s
+sge_option_pda = -n %(ncores)s -t 05:00:00 -A %(allocation)s -p %(jobqueue)s
+sge_option_pla = -n %(ncores)s -t 05:00:00 -A %(allocation)s -p %(jobqueue)s
+sge_option_fc  = -n %(ncores)s -t 05:00:00 -A %(allocation)s -p %(jobqueue)s
+sge_option_cns = -n %(ncores)s -t 05:00:00 -A %(allocation)s -p %(jobqueue)s
+
+maxJobs = 30
+pa_concurrent_jobs = %(maxJobs)s
+ovlp_concurrent_jobs = %(maxJobs)s
+
+pa_HPCdaligner_option = -M20 -dal128 -t16 -e0.7 -l1000 -s500 -h35
+ovlp_HPCdaligner_option = -M20 -dal128 -t32 -e0.96 -l500 -s500 -h60
+
+pa_DBsplit_option = -x500 -s200
+ovlp_DBsplit_option = -x500 -s200
+
+falcon_sense_option = --output_multi --min_idt 0.7 --min_cov 4 --max_n_read 200 --n_core 9
+cns_concurrent_jobs = %(maxJobs)s
+overlap_filtering_setting = --max_diff 100 --max_cov 100 --min_cov 20 --bestn 10 --n_core 16
+```
+
+I added the vQ.py program before the fc_run command in my SLURM batch script
+
+```shell
+#!/bin/bash
+#SBATCH -J ecoli_vq
+#SBATCH -o ecoli_vq.%j.o
+#SBATCH -e ecoli_vq.%j.e
+#SBATCH -p normal
+#SBATCH -t 2:00:00
+#SBATCH -N 5
+#SBATCH -n 5
+#SBATCH -A TACC_ALLOCATION
+module use /work/03076/gzynda/public/apps/modulefiles
+module load python/2.7.9 hdf5 falcon vq
+
+time vQ.py fc_run job_slow.cfg
+```
+
+Falcon divides the input reads into 5 blocks that are 200 megabases each, so using more than 5 nodes will not improve the runtime. This jobs completes in 24 minutes. That means more than half of the 54 minutes was spent as queue overhead. And while vQ allows falcon to run twice as fast, we should be able to craft more efficient jobs by altering the configuration.
+
+Use smaller blocks to oversaturate CPU workload
+Choose an optimal kmer size and frequency
+Use less data - only the largest reads are ever used for correction and assembly
+
+The block size is very important. Many parameters and requirements depend on the block size, so this should be chosen with some care. For large genomes, I recommend a large block size. This will yield fewer tasks, but also fewer files that could affect our lustre filesystem on stampede. I recently helped with a large assembly that created more than 200,000 daligner tasks for the pairwise comparisons. Increasing the block size significantly reduced the stress on the filesystem.
+
+For small genomes, like E. coli, I suggest you choose a block size that is about 10 times the size of the genome or smaller. This is because the k-mer filtering steps are on a block basis, so even if you choose at large values of k, the kmer will be seen the number of times the genome can be fit in the block size. To improve the runtime of the E. coli example, I suggest a block size of 50 megabases, and 13 base pair (bp) k-mers. A 13 bp kmer is expected to be seen
+
+![0.069](http://latex.codecogs.com/gif.latex?%5Cfrac%7B4.6*10%5E6-%2813-1%29%7D%7B4%5E%7B13%7D%7D%20%3D%200.069%20%5Ctext%7B%20times%7D)
+
+in the genome. We round up to integers when counting kmers, so we should only expect to see a kmer once. Because the 4.6 megabase genome fits in the 50 megabase block almost 11 times, you need your `-t` parameter to be at least 11. I found that multiplying the minimum `-t` by ~1.5 yielded nice results. Note that `-t` is not a kmer cutoff, but a read cutoff. Once DALIGNER finds `-t` reads with a specific kmer in a block, it will discard the rest. This is irrespective of length and alignment quality, making the final assembly completely dependent on input order at small values of `-t`.
+
+Because we know that reads are indiscriminately filtered by DALIGNER, we want to make sure that the best (longest) reads are used first. Some steps like error correction make sure to always use the longest reads, but DALIGNER, the first step, does not. The original configuration used reads at least 12,000 base pairs long as the primary reas. This equated to 133x coverage with their sample dataset. Due to cost, this is an unreasonable coverage expectation for most eucharyotic assemblies. I found decent results in the 20x range and was able to reach a single-molecule assembly with primary reads at least 23,000 base pairs long, yielding 27x coverage. While this gave me a theoretical coverage of 27x, I had to drop the overlap minimum coverage to 2 for the final assembly as shown in my job script below.
+
+```shell
+[General]
+input_fofn = input.fofn
+input_type = raw
+length_cutoff = 23000
+length_cutoff_pr = 23000
+use_tmpdir = True
+job_type = SLURM
+jobqueue = normal
+allocation = TACC_ALLOCATION
+
+ncores = 8
+sge_option_da  = -n %(ncores)s -t 05:00:00 -A %(allocation)s -p %(jobqueue)s
+sge_option_la  = -n %(ncores)s -t 05:00:00 -A %(allocation)s -p %(jobqueue)s
+sge_option_pda = -n %(ncores)s -t 05:00:00 -A %(allocation)s -p %(jobqueue)s                        
+sge_option_pla = -n %(ncores)s -t 05:00:00 -A %(allocation)s -p %(jobqueue)s
+sge_option_fc  = -n %(ncores)s -t 05:00:00 -A %(allocation)s -p %(jobqueue)s
+sge_option_cns = -n %(ncores)s -t 05:00:00 -A %(allocation)s -p %(jobqueue)s
+
+maxJobs = 8
+pa_concurrent_jobs = %(maxJobs)s
+ovlp_concurrent_jobs = %(maxJobs)s
+
+pa_HPCdaligner_option = -vb -dal128 -e0.75 -l1000 -k13 -s1000 -t15 -w9 -h320
+ovlp_HPCdaligner_option = -vb -dal128 -e.96 -l1000 -k13 -s1000 -t15 -w9 -h448
+
+pa_DBsplit_option = -x4000 -s50
+ovlp_DBsplit_option = -x4000 -s50
+
+falcon_sense_option = --output_multi --min_idt 0.75 --min_cov 4 --max_n_read 200 --n_core %(ncores)s
+cns_concurrent_jobs = %(maxJobs)s
+
+overlap_filtering_setting = --max_diff 15 --max_cov 44 --min_cov 2 --n_core %(ncores)s --bestn 50
+```
+
+This executed finished in 5 minutes and 33 seconds using the following batch script:
+
+```shell
+#!/bin/bash
+#SBATCH -J ecoli_fast
+#SBATCH -p normal
+#SBATCH -t 0:30:00
+#SBATCH -N 5
+#SBATCH -n 5
+#SBATCH -A TACC_ALLOCATION
+
+module use /work/03076/gzynda/public/apps/modulefiles
+module load python/2.7.9 hdf5 falcon vq
+
+export VQ_PPN=2
+time vQ.py fc_run job.cfg
+```
