@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Using your own cluster with CyVerse"
-date:   2016-08-25
+date:   2017-02-07
 categories: AgaveAPI Agave CyVerse developer
 ---
 <script>
