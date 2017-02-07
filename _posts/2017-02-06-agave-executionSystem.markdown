@@ -105,7 +105,7 @@ Please use your own `username` and `password` in the fields below.
 |--|--|
 | Cluster Name | <input type="text" id="name" style="width:200px; box-sizing:border-box;" value="IU mason" oninput="updateJSON()"> |
 | SSH address | <input type="text" id="host" style="width:200px; box-sizing:border-box;" value="mason.indiana.edu" oninput="updateJSON()"> |
-| Username | <input type="text" id="username" style="width:200px; box-sizing:border-box;" oninput="updateJSON()"> |
+| Username | <input type="text" id="username" style="width:200px; box-sizing:border-box;" valuse="user" oninput="updateJSON()"> |
 | Password | <input type="password" id="password" style="width:200px; box-sizing:border-box;" value="replacethispassword" oninput="updateJSON()"> |
 
 After basic access, Agave will need specific knowledge about the cluster itself.
