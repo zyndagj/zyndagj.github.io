@@ -60,7 +60,6 @@ function updateJSON() {
 	// Insert JSON into HTML
 	document.getElementById("outJSON").innerHTML = JSON.stringify(systemJSON, null, 2);
 }
-updateJSON();
 </script>
 
 The [CyVerse SDK](https://github.com/cyverse/cyverse-sdk) currently guides developers through the process of creating apps that run on [TACC](https://www.tacc.utexas.edu/) supercomputers, which requires both a TACC account and active alloction. For users without an active allocation, they can [request to be added](https://github.com/cyverse/cyverse-sdk/blob/dee56dfbd6e18ef25066a4acec66ba834242b827/docs/iplant-assumptions.md) to the iPlant-Collabs allocation, which allows developers to *prototype* CyVerse applications. While this methodology allows for the creation of new apps, they actually need to be made public to take advantage of the much larger CyVerse allocation, which an only be done by an administrator. To circumvent this constraint, or to simply utilized resources provided by your institution, you can actually register your own [executionSystem](http://developer.agaveapi.co/#execution-systems) to run apps on, which will be accessible through the CyVerse Discovery Environment.
@@ -80,7 +79,7 @@ The fact that [each of the 18 nodes](https://kb.iu.edu/d/bbhh#info) also has 512
 
 To make creation easier, I will be providing forms in each section below, which will populate a final JSON executionDescription, which you can upload to agave.
 
-### Login Credentials
+## Login Credentials
 
 Whenever you launch a job on CyVerse, Agave uses the CyVerse credentials to access TACC systems to run jobs. Similarly, Agave stores and uses your own personal credentials when running private applications on systems. So, to register a new *executionSystem*, you first need a way to access it. I usually access Mason using ssh with the command
 
@@ -93,35 +92,35 @@ and then entering my password when prompted. Agave will need your
 | Description | Value |
 |--|--|
 | System Name | <input type="text" id="id" style="width:200px; box-sizing:border-box;" value="my-mason-system" oninput="updateJSON()"> |
-| SSH address | <input type="text" id="host" style="width:200px; box-sizing:border-box;" value="mason.indiana.edu"> |
-| Username | <input type="text" id="username" style="width:200px; box-sizing:border-box;"> |
-| Password | <input type="password" id="password" style="width:200px; box-sizing:border-box;"> |
+| SSH address | <input type="text" id="host" style="width:200px; box-sizing:border-box;" value="mason.indiana.edu" oninput="updateJSON()"> |
+| Username | <input type="text" id="username" style="width:200px; box-sizing:border-box;" oninput="updateJSON()"> |
+| Password | <input type="password" id="password" style="width:200px; box-sizing:border-box;" oninput="updateJSON()"> |
 
-### Scheduler Information
+## Scheduler Information
 
 When Agave runs a job on CyVerse, it submits a job to the SLURM schedulers at TACC. Agave needs to know what scheduler your cluster runs, which queue, and any other necessary accounting information.
 
 | Description | Value |
 |--|--|
-| Scheduler | <select id="scheduler"><option value="MOAB">MOAB</option><option value="SLURM">SLURM</option><option value="LSF">LSF</option><option value="LOADLEVELER">LOADLEVELER</option><option value="PBS">PBS</option><option value="SGE">SGE</option><option value="FORK">FORK</option><option value="COBALT">COBALT</option><option value="TORQUE">TORQUE</option></select> |
-| Max Jobs | <input type="number" id="maxJobs" min="-1" max="100" value="50"> |
-| Queue | <input type="text" id="queue" style="width:200px; box-sizing:border-box;" value="normal"> |
-| Max Nodes | <input type="number" id="maxNodes" min="-1" max="1000" value="18"> |
-| Max Runtime (hours) | <input type="number" id="runtime" min="-1" max="120" value="48"> |
-| Custome queue directives | <input type="text" id="directives" style="width:200px; box-sizing:border-box;" value="normal"> |
+| Scheduler | <select id="scheduler" onchange="updateJSON()"><option value="MOAB">MOAB</option><option value="SLURM">SLURM</option><option value="LSF">LSF</option><option value="LOADLEVELER">LOADLEVELER</option><option value="PBS">PBS</option><option value="SGE">SGE</option><option value="FORK">FORK</option><option value="COBALT">COBALT</option><option value="TORQUE">TORQUE</option></select> |
+| Max Jobs | <input type="number" id="maxJobs" min="-1" max="100" value="50" oninput="updateJSON()"> |
+| Queue | <input type="text" id="queue" style="width:200px; box-sizing:border-box;" value="normal" oninput="updateJSON()"> |
+| Max Nodes | <input type="number" id="maxNodes" min="-1" max="1000" value="18" oninput="updateJSON()"> |
+| Max Runtime (hours) | <input type="number" id="runtime" min="-1" max="120" value="48" oninput="updateJSON()"> |
+| Custome queue directives | <input type="text" id="directives" style="width:200px; box-sizing:border-box;" value="normal" oninput="updateJSON()"> |
 
 You technically can register a signal workstation to Agave by setting the *executionType* to `CLI`, but this guide is looking to enable large-scale computing, so we're going to focus on registering a cluster.
 
-### System Information
+## System Information
 
 Agave also needs information about the compute nodes in your desired queue so resources cannot be overrequested.
 
 | Description | Value |
 |--|--|
-| Max Processors per Node | <input type="number" id="maxPPN" min="-1" max="128" value="32"> |
-| Max Memory per Node (GB) | <input type="number" id="maxMEM" min="-1" max="4000" value="512"> |
+| Max Processors per Node | <input type="number" id="maxPPN" min="-1" max="128" value="32" oninput="updateJSON()"> |
+| Max Memory per Node (GB) | <input type="number" id="maxMEM" min="-1" max="4000" value="512" oninput="updateJSON()"> |
 
-### Storage Paths
+## Storage Paths
 
 Before a job is submitted to a scheduler, Agave first stages all app (binaries) and input data in a unique folder for each job run. This folder is created in a location relative to a directory you choose.
 Our home path should be set to our `$HOME` directory so Agave can find our `.bashrc` and properly load our environment.
@@ -129,7 +128,8 @@ We should also set our scratch path to a directory with a lot of storage and cap
 
 | Description | Value |
 |--|--|
-| Home path | <input type="text" id="homeDir" style="width:200px; box-sizing:border-box;" value="/N/u/user/Mason"> |
-| Scratch path | <input type="text" id="scratchDir" style="width:200px; box-sizing:border-box;" value="/N/dc2/scratch/user/Agave"> |
+| Home path | <input type="text" id="homeDir" style="width:200px; box-sizing:border-box;" value="/N/u/user/Mason" oninput="updateJSON()"> |
+| Scratch path | <input type="text" id="scratchDir" style="width:200px; box-sizing:border-box;" value="/N/dc2/scratch/user/Agave" oninput="updateJSON()"> |
 
 <div class="language-json highlighter-rouge"><pre class="highlight"><code id="outJSON"></code></pre></div>
+<script>updateJSON();</script>
