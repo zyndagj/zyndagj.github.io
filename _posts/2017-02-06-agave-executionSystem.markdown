@@ -95,7 +95,7 @@ So, the first requirement to creating a new *executionSystem* is having `ssh` ac
 I usually access Mason using ssh with the command
 
 ```shell
-$ ssh username@mason.indiana.edu
+$ ssh user@mason.indiana.edu
 ```
 
 and then enter my password when prompted.
@@ -105,7 +105,7 @@ Please use your own `username` and `password` in the fields below.
 |--|--|
 | Cluster Name | <input type="text" id="name" style="width:200px; box-sizing:border-box;" value="IU mason" oninput="updateJSON()"> |
 | SSH address | <input type="text" id="host" style="width:200px; box-sizing:border-box;" value="mason.indiana.edu" oninput="updateJSON()"> |
-| Username | <input type="text" id="username" style="width:200px; box-sizing:border-box;" valuse="user" oninput="updateJSON()"> |
+| Username | <input type="text" id="username" style="width:200px; box-sizing:border-box;" value="user" oninput="updateJSON()"> |
 | Password | <input type="password" id="password" style="width:200px; box-sizing:border-box;" value="replacethispassword" oninput="updateJSON()"> |
 
 After basic access, Agave will need specific knowledge about the cluster itself.
