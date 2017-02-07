@@ -11,11 +11,56 @@ function gVal(id) {
 }
 function updateJSON() {
 	// Create systemJSON
-	var systemJSON = {};
-	systemJSON.id = gVal("id");
+	var systemJSON = {
+		description:"Personal executionSystem for Mason",
+		type:"EXECUTION",
+		name:"IU Mason",
+		site:"indiana.edu",
+		executionType:"HPC",
+		startupScript:"./bashrc",
+		default:false,
+	};
+	systemJSON.id = gVal("id").replace(/ /g, '-');
+	systemJSON.login = {
+		port:22,
+		protocol:"SSH",
+		host:gVal("host"),
+		auth:{
+			username:gVal("username"),
+			password:gVal("password"),
+			type:"PASSWORD"
+		}
+	};
+	systemJSON.queues = [{
+		maxProcessorsPerNode:gVal("maxPPN"),
+		maxMemoryPerNode:gVal("maxMEM"),
+		name:gVal("queue"),
+		maxNodes:gVal("maxNodes"),
+		maxRequestedTime:gVal("runtime")+":00:00",
+		customDirectives:gVal("directives"),
+		default:true
+	}];
+	systemJSON.maxSystemJobs = gVal("maxJobs");
+	systemJSON.scheduler = gVal("scheduler");
+	
+	systemJSON.scratchDir = gVal("scratchDir");
+	systemJSON.storage = {
+		mirror:false,
+		port:22,
+		homeDir:gVal("homeDir"),
+		protocol:"SFTP",
+		host:gVal("host"),
+		rootDir:"/",
+		auth:{
+			username:gVal("username"),
+			password:gVal("password"),
+			type:"PASSWORD"
+		}
+	};
 	// Insert JSON into HTML
 	document.getElementById("outJSON").innerHTML = JSON.stringify(systemJSON, null, 2);
 }
+updateJSON();
 </script>
 
 The [CyVerse SDK](https://github.com/cyverse/cyverse-sdk) currently guides developers through the process of creating apps that run on [TACC](https://www.tacc.utexas.edu/) supercomputers, which requires both a TACC account and active alloction. For users without an active allocation, they can [request to be added](https://github.com/cyverse/cyverse-sdk/blob/dee56dfbd6e18ef25066a4acec66ba834242b827/docs/iplant-assumptions.md) to the iPlant-Collabs allocation, which allows developers to *prototype* CyVerse applications. While this methodology allows for the creation of new apps, they actually need to be made public to take advantage of the much larger CyVerse allocation, which an only be done by an administrator. To circumvent this constraint, or to simply utilized resources provided by your institution, you can actually register your own [executionSystem](http://developer.agaveapi.co/#execution-systems) to run apps on, which will be accessible through the CyVerse Discovery Environment.
@@ -58,7 +103,7 @@ When Agave runs a job on CyVerse, it submits a job to the SLURM schedulers at TA
 
 | Description | Value |
 |--|--|
-| Scheduler | <select id="scheduler"><option value="SLURM">SLURM</option><option value="LSF">LSF</option><option value="LOADLEVELER">LOADLEVELER</option><option value="PBS">PBS</option><option value="SGE">SGE</option><option value="FORK">FORK</option><option value="COBALT">COBALT</option><option value="TORQUE">TORQUE</option><option value="MOAB">MOAB</option></select> |
+| Scheduler | <select id="scheduler"><option value="MOAB">MOAB</option><option value="SLURM">SLURM</option><option value="LSF">LSF</option><option value="LOADLEVELER">LOADLEVELER</option><option value="PBS">PBS</option><option value="SGE">SGE</option><option value="FORK">FORK</option><option value="COBALT">COBALT</option><option value="TORQUE">TORQUE</option></select> |
 | Max Jobs | <input type="number" id="maxJobs" min="-1" max="100" value="50"> |
 | Queue | <input type="text" id="queue" style="width:200px; box-sizing:border-box;" value="normal"> |
 | Max Nodes | <input type="number" id="maxNodes" min="-1" max="1000" value="18"> |
@@ -84,121 +129,7 @@ We should also set our scratch path to a directory with a lot of storage and cap
 
 | Description | Value |
 |--|--|
-| Home path | <input type="text" id="home" style="width:200px; box-sizing:border-box;" value="/N/u/user/Mason"> |
-| Scratch path | <input type="text" id="scratch" style="width:200px; box-sizing:border-box;" value="/N/dc2/scratch/user/Agave"> |
+| Home path | <input type="text" id="homeDir" style="width:200px; box-sizing:border-box;" value="/N/u/user/Mason"> |
+| Scratch path | <input type="text" id="scratchDir" style="width:200px; box-sizing:border-box;" value="/N/dc2/scratch/user/Agave"> |
 
 <div class="language-json highlighter-rouge"><pre class="highlight"><code id="outJSON"></code></pre></div>
-
-```json
-{
-  "maxSystemJobs": 2147483647,
-  "workDir": "",
-  "scratchDir": "",
-  "type": "EXECUTION",
-  "id": "stampede.tacc.utexas.edu",
-  "description": "Stampede is intended primarily for parallel applications scalable to tens of thousands of cores.  Normal batch queues will enable users to run simulations up to 24 hours.  Jobs requiring run times and more cores than allowed by the normal queues will be run in a special queue after approval of TACC staff.  Serial and development queues will also be configured. In addition, users will be able to run jobs using thousands of the Intel Xeon Phi coprocessors via the same queues to support massively parallel workflows.",
-  "name": "TACC Stampede",
-  "login": {
-    "port": 22,
-    "protocol": "SSH",
-    "host": "login6.stampede.tacc.utexas.edu",
-    "proxy": null,
-    "auth": {
-      "type": "SSHKEYS"
-    },
-    "proxyTunnel": "NO"
-  },
-  "maxSystemJobsPerUser": 2147483647,
-  "site": "tacc.xsede.org",
-  "status": "UP",
-  "scheduler": "SLURM",
-  "startupScript": "./bashrc",
-  "available": true,
-  "default": false,
-  "environment": "",
-  "owner": "dooley",
-  "executionType": "HPC",
-  "globalDefault": false,
-  "queues": [
-    {
-      "maxProcessorsPerNode": 512,
-      "default": false,
-      "maxMemoryPerNode": "32GB",
-      "mappedName": "gpu",
-      "description": null,
-      "name": "gpu",
-      "maxRequestedTime": "48:00:00",
-      "maxJobs": 25,
-      "customDirectives": "-A iPlant-Master",
-      "maxNodes": 32,
-      "maxUserJobs": 5
-    },
-    {
-      "maxProcessorsPerNode": 4096,
-      "default": true,
-      "maxMemoryPerNode": "32GB",
-      "mappedName": "normal",
-      "description": null,
-      "name": "normal",
-      "maxRequestedTime": "48:00:00",
-      "maxJobs": 25,
-      "customDirectives": "-A iPlant-Master",
-      "maxNodes": 256,
-      "maxUserJobs": 5
-    },
-    {
-      "maxProcessorsPerNode": 16,
-      "default": false,
-      "maxMemoryPerNode": "32GB",
-      "mappedName": "serial",
-      "description": null,
-      "name": "serial",
-      "maxRequestedTime": "48:00:00",
-      "maxJobs": 6,
-      "customDirectives": "-A iPlant-Master",
-      "maxNodes": 1,
-      "maxUserJobs": 3
-    },
-    {
-      "maxProcessorsPerNode": 128,
-      "default": false,
-      "maxMemoryPerNode": "1000GB",
-      "mappedName": "largemem",
-      "description": null,
-      "name": "largemem",
-      "maxRequestedTime": "48:00:00",
-      "maxJobs": 2,
-      "customDirectives": "-A iPlant-Master",
-      "maxNodes": 4,
-      "maxUserJobs": 1
-    },
-    {
-      "maxProcessorsPerNode": 256,
-      "default": false,
-      "maxMemoryPerNode": "32GB",
-      "mappedName": "development",
-      "description": null,
-      "name": "development",
-      "maxRequestedTime": "48:00:00",
-      "maxJobs": 1,
-      "customDirectives": "-A iPlant-Master",
-      "maxNodes": 16,
-      "maxUserJobs": 1
-    }
-  ],
-  "public": true,
-  "storage": {
-    "mirror": false,
-    "port": 22,
-    "homeDir": "/",
-    "protocol": "SFTP",
-    "host": "login6.stampede.tacc.utexas.edu",
-    "proxy": null,
-    "rootDir": "/scratch/0004/iplant",
-    "auth": {
-      "type": "SSHKEYS"
-    },
-    "proxyTunnel": "NO"
-  }
-}
-```
