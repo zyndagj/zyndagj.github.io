@@ -80,7 +80,7 @@ The fact that [each of the 18 nodes](https://kb.iu.edu/d/bbhh#info) also has 512
 
 To make creation easier, I will be providing forms in each section below, which will populate a final JSON executionDescription, which you can upload to agave.
 
-## Login Credentials
+### Login Credentials
 
 Whenever you launch a job on CyVerse, Agave uses the CyVerse credentials to access TACC systems to run jobs. Similarly, Agave stores and uses your own personal credentials when running private applications on systems. So, to register a new *executionSystem*, you first need a way to access it. I usually access Mason using ssh with the command
 
@@ -97,7 +97,7 @@ and then entering my password when prompted. Agave will need your
 | Username | <input type="text" id="username" style="width:200px; box-sizing:border-box;"> |
 | Password | <input type="password" id="password" style="width:200px; box-sizing:border-box;"> |
 
-## Scheduler Information
+### Scheduler Information
 
 When Agave runs a job on CyVerse, it submits a job to the SLURM schedulers at TACC. Agave needs to know what scheduler your cluster runs, which queue, and any other necessary accounting information.
 
@@ -112,7 +112,7 @@ When Agave runs a job on CyVerse, it submits a job to the SLURM schedulers at TA
 
 You technically can register a signal workstation to Agave by setting the *executionType* to `CLI`, but this guide is looking to enable large-scale computing, so we're going to focus on registering a cluster.
 
-## System Information
+### System Information
 
 Agave also needs information about the compute nodes in your desired queue so resources cannot be overrequested.
 
@@ -121,7 +121,7 @@ Agave also needs information about the compute nodes in your desired queue so re
 | Max Processors per Node | <input type="number" id="maxPPN" min="-1" max="128" value="32"> |
 | Max Memory per Node (GB) | <input type="number" id="maxMEM" min="-1" max="4000" value="512"> |
 
-## Storage Paths
+### Storage Paths
 
 Before a job is submitted to a scheduler, Agave first stages all app (binaries) and input data in a unique folder for each job run. This folder is created in a location relative to a directory you choose.
 Our home path should be set to our `$HOME` directory so Agave can find our `.bashrc` and properly load our environment.
