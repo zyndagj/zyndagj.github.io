@@ -4,6 +4,13 @@ title:  "Using your own cluster with CyVerse"
 date:   2017-02-07
 categories: AgaveAPI Agave CyVerse developer
 ---
+
+The [CyVerse SDK](https://github.com/cyverse/cyverse-sdk) currently guides developers through the process of creating apps that run on [TACC](https://www.tacc.utexas.edu/) supercomputers, which requires both a TACC account and an active allocation.
+For users without an active allocation, they can request to be added to the [iPlant-Collabs allocation](https://github.com/cyverse/cyverse-sdk/blob/dee56dfbd6e18ef25066a4acec66ba834242b827/docs/iplant-assumptions.md), which allows developers to *prototype* CyVerse applications.
+I stress the word prototype because the iPlant-Collabs allocation is relatively small on purpose to make sure unvetted apps aren't burning away all the compute time allotted for CyVerse.
+This methodology is great to generate new apps, the apps needs to be reviewed and published by administrators before they can be run at scale on CyVerse.
+If a user already has access to a high-performance cluster at their own institution, they can circumvent the constrains of iPlant-Collabs by registering their own [executionSystem](http://developer.agaveapi.co/#execution-systems) to the Agave API and running apps on it from the CyVerse Discovery Environment.
+
 <script>
 function gVal(id) {
 	return document.getElementById(id).value;
@@ -60,12 +67,6 @@ function updateJSON() {
 	document.getElementById("outJSON").innerHTML = JSON.stringify(systemJSON, null, 2);
 }
 </script>
-
-The [CyVerse SDK](https://github.com/cyverse/cyverse-sdk) currently guides developers through the process of creating apps that run on [TACC](https://www.tacc.utexas.edu/) supercomputers, which requires both a TACC account and an active allocation.
-For users without an active allocation, they can request to be added to the [iPlant-Collabs allocation](https://github.com/cyverse/cyverse-sdk/blob/dee56dfbd6e18ef25066a4acec66ba834242b827/docs/iplant-assumptions.md), which allows developers to *prototype* CyVerse applications.
-I stress the word prototype because the iPlant-Collabs allocation is relatively small on purpose to make sure unvetted apps aren't burning away all the compute time allotted for CyVerse.
-This methodology is great to generate new apps, the apps needs to be reviewed and published by administrators before they can be run at scale on CyVerse.
-If a user already has access to a high-performance cluster at their own institution, they can circumvent the constrains of iPlant-Collabs by registering their own [executionSystem](http://developer.agaveapi.co/#execution-systems) to the Agave API and running apps on it from the CyVerse Discovery Environment.
 
 I am still a student at Indiana University, so I will be registering [Mason](https://kb.iu.edu/d/bbhh) as an *executionSystem* to be used with my CyVerse applications. Mason is [available](https://kb.iu.edu/d/bbhh#account) to all
 
