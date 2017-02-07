@@ -159,7 +159,7 @@ scratchDir/
 To keep clutter down in the root of my personal folder, I'm going to create a CyVerse folder
 
 ```shell
-$ mkdir /N/dc2/scratch/user/CyVerse
+[mason]$ mkdir /N/dc2/scratch/user/CyVerse
 ```
 
 for Agave to store user and job directories in. In the fields below, please change `user` to your own username, or change the locations to a more preferable directory.
@@ -180,8 +180,10 @@ Assuming you have already have an installed and working version of the [CyVerse 
 [mason]$ auth-tokens-refresh -S
 Token for iplantc.org:user successfully refreshed and cached for 14400 seconds
 45098349583490859034859304859043
+
 [mason]$ systems-addupdate -F user-mason.json 
 Successfully added system user-IU-mason
+
 [mason]$ systems-list -Q
 user-IU-mason
 ```
@@ -219,9 +221,18 @@ software
 splitFiles.sh
 tmp
 trinity-avo.sh
+
 [mason]$ ls -a ~
-.   454AllContigs.fna  .bash_logout   .bashrc         blatScript.sh    .forward      .history            .lesshst  .modulesbeginenv  runBlast.py  scripts                software       .ssh  trinity-avo.sh  .viminfo
-..  .bash_history      .bash_profile  blastScript.sh  combineFiles.sh  gzipFiles.sh  hs_err_pid1987.log  .local    .mozilla          runBlat.py   scripts_backup.tar.gz  splitFiles.sh  tmp   .vim            .Xauthority
+.                  .forward            scripts
+..                 gzipFiles.sh        scripts_backup.tar.gz
+454AllContigs.fna  .history            software
+.bash_history      hs_err_pid1987.log  splitFiles.sh
+.bash_logout       .lesshst            .ssh
+.bash_profile      .local              tmp
+.bashrc            .modulesbeginenv    trinity-avo.sh
+blastScript.sh     .mozilla            .vim
+blatScript.sh      runBlast.py         .viminfo
+combineFiles.sh    runBlat.py          .Xauthority
 ```
 
 Your new Mason *executionSystem* is ready for use! In my next post, I plan on demonstrating how to clone and deploy apps to personal systems. If you can't wait, just follow the [CyVerse SDK](https://github.com/cyverse/cyverse-sdk), but specify Mason as your executionSystem in your app description.
