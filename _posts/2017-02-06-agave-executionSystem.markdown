@@ -21,9 +21,9 @@ function gInt(id) {
 function updateJSON() {
 	// Create systemJSON
 	var authObj = {
-		username:gVal("username"),
-		password:gVal("password"),
-		type:"PASSWORD"
+		privateKey:gVal("private").replace(/\n\+$/, ''),
+		publicKey:gVal("public").replace(/\n\+$/, ''),
+		type:"SSHKEYS"
 	};
 	var systemJSON = {
 		description:"Personal executionSystem for "+gVal("name"),
@@ -85,7 +85,8 @@ To create this and any other executionSystem, you will need
 
 To make creation of the executionSystem JSON easier, I will be providing forms in each section below.
 Editing any field will automatically update the final JSON for you send to Agave.
-At no point is any of this information transmitted, so you can safely use your actual password in the password field, or simply replace the default `replacethispassword` with your actual one before registering with Agave.
+At no point is any of this information transmitted, so you can safely add your login credentials without worry.
+However, you have the option to fill in your actual rsa keys before submitting to Agave.
 The inputs to these forms are pre-populated with information about Mason, so you will need to adapt the values and the JSON description for a different system.
 
 ### Login Credentials
@@ -100,16 +101,45 @@ $ ssh user@mason.indiana.edu
 ```
 
 and then enter my password when prompted.
-Please use your own `username` and `password` in the fields below.
+Agave does support password authentication, but handing your password over to strange systems is generally a bad habit.
+Allowing systems to authenticate to your account using ssh keys is much more secure, and makes it impossible for them to change your account password.
+Please follow the directions below to generate a set of keys for agave.
+
+```shell
+[mason]$ cd ~/.ssh/
+[mason]$ ssh-keygen -q -t rsa -b 4096 -C user@email.com -f agave_rsa -N ''
+[mason]$ cat agave_rsa
+-----BEGIN RSA PRIVATE KEY-----
+MIIJKAIBAAKCAgEApQQ+n7AsXzAHqkd+xhkmLTIuhLIYiDGNr4DNuFiV+/LsFKRE
+ZyqacqOwf3ZA51C9XcsPLfaglNrBbCiRl70W8z8zybQUdW3hJPjC7qrG2lAJBfjE
+BcodjwtR0DVny8JGyWwSdCw6/I4TFxS/+dT6CQ7XoYpfguC8IG4JxbtKxAMaVuAj
+.
+.
+.
+Owhcksd0X5swsCLzoivhf+EpALcohwAwR6fbreavprdIJikwDIBs0ruPOZ7nk4nz
+OOYL2M7VZ1XdHzg70IvblLDZCOX/sghRPvBZZwdKHVbCDlLBKuOP4CdnZmpCD3Yx
+V/qIgePP+LanugxaRdzdZLcQJ7crk1L+3/2McMWaAtNwpvDCk31rQhIVpJE=
+-----END RSA PRIVATE KEY-----
+[mason]$ cat agave_rsa.pub 
+ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAgEApQQ+n7AsXzAHqkd+xhkmLTIuhLIYiDGNr4DNuFiV+/LsFKREZyqacqOwf3ZA51C9XcsPLfaglNrBbCiRl70W8z8zybQUdW3hJPjC7qrG2lAJBfjEBcodjwtR0DVny8JGyWwSdCw6/I4TFxS/+dT6CQ7XoYpfguC8IG4JxbtKxAMaVuAjV1VH+Z7gl+mNu/gbWtX16GD0SCM/C7YY3fPisHDfyJGioHMNlcPC+YrHIoRuHphSdCKUImIVzAKkKr8fnayFPXi2aP095OJAdhGhvTrIyCAgKjeAZFQK4s0HBwmUJR6BK6UwuHw0M95T8aBgSj48vbN53nvTFcnq3ECFCnKdO1F1Q8f5zen+ExDaExdir3C3ukHf+NR2ZMrOm++YtxLjlYCK/QUj8BN+RFEeQQFBCg6j6XjitBAKdH49cnYwvxTkbsrC50xiM0V6pVfzsX4LpHjoB+yu5etaT45bcLS5h1TR8b7mo9ohvseLE9EqAHLhDzmiu9v0VxF3I2txkYfxWS09Syfn7914FYBgF9zQs4hWlJKIsWo03nTTtZo+z/o+5hzpfJZ61acAM7PtRgXrcGwwnMo5N45CrNj17yfzsKFNhoYscep6R3el6jxsjSxA+/JYawkZtg3dnKhG5XXQW1+SrQVwbh7u+p+5wMtQhVss32h20jr/+hHKb8U= user@email.com
+```
+
+Copy your **entire** private key (`agave\_rsa`), including the `---` header and footer and paste into the corresponding field below. Do the same with your public key (`agave\_rsa.pub`), including the "ssh-rsa" and your email at the end.
 
 | Description | Value |
 |--|--|
-| Cluster Name | <input type="text" id="name" style="width:200px; box-sizing:border-box;" value="IU mason" oninput="updateJSON()"> |
-| SSH address | <input type="text" id="host" style="width:200px; box-sizing:border-box;" value="mason.indiana.edu" oninput="updateJSON()"> |
-| Username | <input type="text" id="username" style="width:200px; box-sizing:border-box;" value="user" oninput="updateJSON()"> |
-| Password | <input type="password" id="password" style="width:200px; box-sizing:border-box;" value="replacethispassword" oninput="updateJSON()"> |
+| Cluster Name | <input type="text" id="name" style="width:300px; box-sizing:border-box;" value="IU mason" oninput="updateJSON()"> |
+| SSH address | <input type="text" id="host" style="width:300px; box-sizing:border-box;" value="mason.indiana.edu" oninput="updateJSON()"> |
+| Private Key | <textarea id="private" rows="10" style="width:300px; box-sizing:border-box;" value="" oninput="updateJSON()"></textarea> |
+| Public Key | <textarea id="public" rows="5" style="width:300px; box-sizing:border-box;" value="" oninput="updateJSON()"></textarea> |
 
-After basic access, Agave will need specific knowledge about the cluster itself.
+Remember, if you ever want to revoke Agave's access to your system, you only need to
+
+```shell
+[mason]$ rm ~/.ssh/agave_rsa*
+```
+
+to permanently delete the keys from the system. After granting basic access, Agave will need specific knowledge about the cluster itself.
 
 ### Scheduler Information
 
@@ -237,3 +267,5 @@ combineFiles.sh    runBlat.py          .Xauthority
 ```
 
 Your new Mason *executionSystem* is ready for use! In my next post, I plan on demonstrating how to clone and deploy apps to personal systems. If you can't wait, just follow the [CyVerse SDK](https://github.com/cyverse/cyverse-sdk), but specify Mason as your executionSystem in your app description.
+
+*2017-02-10 - Guide was updated to use ssh keys instead of passwords for authentication.*
