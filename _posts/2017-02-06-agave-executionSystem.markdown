@@ -21,8 +21,8 @@ function gInt(id) {
 function updateJSON() {
 	// Create systemJSON
 	var authObj = {
-		privateKey:gVal("private").replace(/\n\+$/, ''),
-		publicKey:gVal("public").replace(/\n\+$/, ''),
+		privateKey:gVal("private"),
+		publicKey:gVal("public"),
 		type:"SSHKEYS"
 	};
 	var systemJSON = {
@@ -121,7 +121,18 @@ OOYL2M7VZ1XdHzg70IvblLDZCOX/sghRPvBZZwdKHVbCDlLBKuOP4CdnZmpCD3Yx
 V/qIgePP+LanugxaRdzdZLcQJ7crk1L+3/2McMWaAtNwpvDCk31rQhIVpJE=
 -----END RSA PRIVATE KEY-----
 [mason]$ cat agave_rsa.pub 
-ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAgEApQQ+n7AsXzAHqkd+xhkmLTIuhLIYiDGNr4DNuFiV+/LsFKREZyqacqOwf3ZA51C9XcsPLfaglNrBbCiRl70W8z8zybQUdW3hJPjC7qrG2lAJBfjEBcodjwtR0DVny8JGyWwSdCw6/I4TFxS/+dT6CQ7XoYpfguC8IG4JxbtKxAMaVuAjV1VH+Z7gl+mNu/gbWtX16GD0SCM/C7YY3fPisHDfyJGioHMNlcPC+YrHIoRuHphSdCKUImIVzAKkKr8fnayFPXi2aP095OJAdhGhvTrIyCAgKjeAZFQK4s0HBwmUJR6BK6UwuHw0M95T8aBgSj48vbN53nvTFcnq3ECFCnKdO1F1Q8f5zen+ExDaExdir3C3ukHf+NR2ZMrOm++YtxLjlYCK/QUj8BN+RFEeQQFBCg6j6XjitBAKdH49cnYwvxTkbsrC50xiM0V6pVfzsX4LpHjoB+yu5etaT45bcLS5h1TR8b7mo9ohvseLE9EqAHLhDzmiu9v0VxF3I2txkYfxWS09Syfn7914FYBgF9zQs4hWlJKIsWo03nTTtZo+z/o+5hzpfJZ61acAM7PtRgXrcGwwnMo5N45CrNj17yfzsKFNhoYscep6R3el6jxsjSxA+/JYawkZtg3dnKhG5XXQW1+SrQVwbh7u+p+5wMtQhVss32h20jr/+hHKb8U= user@email.com
+ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAgEApQQ+n7AsXzAHqkd+xhkmLTIuhLIY
+iDGNr4DNuFiV+/LsFKREZyqacqOwf3ZA51C9XcsPLfaglNrBbCiRl70W8z8zybQU
+dW3hJPjC7qrG2lAJBfjEBcodjwtR0DVny8JGyWwSdCw6/I4TFxS/+dT6CQ7XoYpf
+guC8IG4JxbtKxAMaVuAjV1VH+Z7gl+mNu/gbWtX16GD0SCM/C7YY3fPisHDfyJGi
+oHMNlcPC+YrHIoRuHphSdCKUImIVzAKkKr8fnayFPXi2aP095OJAdhGhvTrIyCAg
+KjeAZFQK4s0HBwmUJR6BK6UwuHw0M95T8aBgSj48vbN53nvTFcnq3ECFCnKdO1F1
+Q8f5zen+ExDaExdir3C3ukHf+NR2ZMrOm++YtxLjlYCK/QUj8BN+RFEeQQFBCg6j
+6XjitBAKdH49cnYwvxTkbsrC50xiM0V6pVfzsX4LpHjoB+yu5etaT45bcLS5h1TR
+8b7mo9ohvseLE9EqAHLhDzmiu9v0VxF3I2txkYfxWS09Syfn7914FYBgF9zQs4hW
+lJKIsWo03nTTtZo+z/o+5hzpfJZ61acAM7PtRgXrcGwwnMo5N45CrNj17yfzsKFN
+hoYscep6R3el6jxsjSxA+/JYawkZtg3dnKhG5XXQW1+SrQVwbh7u+p+5wMtQhVss
+32h20jr/+hHKb8U= user@email.com
 ```
 
 Copy your **entire** private key (`agave\_rsa`), including the `---` header and footer and paste into the corresponding field below. Do the same with your public key (`agave\_rsa.pub`), including the "ssh-rsa" and your email at the end.
