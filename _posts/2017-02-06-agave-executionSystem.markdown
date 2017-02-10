@@ -135,7 +135,7 @@ hoYscep6R3el6jxsjSxA+/JYawkZtg3dnKhG5XXQW1+SrQVwbh7u+p+5wMtQhVss
 32h20jr/+hHKb8U= user@email.com
 ```
 
-Copy your **entire** private key (`agave\_rsa`), including the `---` header and footer and paste into the corresponding field below. Do the same with your public key (`agave\_rsa.pub`), including the "ssh-rsa" and your email at the end.
+Copy your **entire** private key (agave\_rsa), including the `---` header and footer and paste into the corresponding field below. Do the same with your public key (agave\_rsa.pub), including the "ssh-rsa" and your email at the end.
 
 | Description | Value |
 |--|--|
