@@ -21,8 +21,8 @@ function gInt(id) {
 function updateJSON() {
 	// Create systemJSON
 	var authObj = {
-		privateKey:gVal("private"),
-		publicKey:gVal("public"),
+		privateKey:gVal("private").replace(/\n\+$/,''),
+		publicKey:gVal("public").replace(/\n\+$/,''),
 		type:"SSHKEYS"
 	};
 	var systemJSON = {
@@ -141,8 +141,9 @@ Copy your **entire** private key (agave\_rsa), including the `---` header and fo
 |--|--|
 | Cluster Name | <input type="text" id="name" style="width:300px; box-sizing:border-box;" value="IU mason" oninput="updateJSON()"> |
 | SSH address | <input type="text" id="host" style="width:300px; box-sizing:border-box;" value="mason.indiana.edu" oninput="updateJSON()"> |
-| Private Key | <textarea id="private" rows="10" style="width:300px; box-sizing:border-box;" oninput="updateJSON()">Enter your private key</textarea> |
-| Public Key | <textarea id="public" rows="5" style="width:300px; box-sizing:border-box;" oninput="updateJSON()">Enter your public key</textarea> |
+| Username | <input type="text" id="username" style="width:300px; box-sizing:border-box;" value="user" oninput="updateJSON()"> |
+| Private Key | <textarea id="private" rows="10" style="width:300px; box-sizing:border-box;" oninput="updateJSON()"></textarea> |
+| Public Key | <textarea id="public" rows="5" style="width:300px; box-sizing:border-box;" oninput="updateJSON()"></textarea> |
 
 Remember, if you ever want to revoke Agave's access to your system, you only need to
 
