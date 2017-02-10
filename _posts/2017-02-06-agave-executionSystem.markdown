@@ -141,8 +141,8 @@ Copy your **entire** private key (agave\_rsa), including the `---` header and fo
 |--|--|
 | Cluster Name | <input type="text" id="name" style="width:300px; box-sizing:border-box;" value="IU mason" oninput="updateJSON()"> |
 | SSH address | <input type="text" id="host" style="width:300px; box-sizing:border-box;" value="mason.indiana.edu" oninput="updateJSON()"> |
-| Private Key | <textarea id="private" rows="10" style="width:300px; box-sizing:border-box;" oninput="updateJSON()"></textarea> |
-| Public Key | <textarea id="public" rows="5" style="width:300px; box-sizing:border-box;" oninput="updateJSON()"></textarea> |
+| Private Key | <textarea id="private" rows="10" style="width:300px; box-sizing:border-box;" oninput="updateJSON()">Enter your private key</textarea> |
+| Public Key | <textarea id="public" rows="5" style="width:300px; box-sizing:border-box;" oninput="updateJSON()">Enter your public key</textarea> |
 
 Remember, if you ever want to revoke Agave's access to your system, you only need to
 
