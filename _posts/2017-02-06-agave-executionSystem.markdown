@@ -21,8 +21,8 @@ function gInt(id) {
 function updateJSON() {
 	// Create systemJSON
 	var authObj = {
-		privateKey:gVal("private").replace(/\n\+$/,''),
-		publicKey:gVal("public").replace(/\n\+$/,''),
+		privateKey:gVal("private").replace(/\n+$/,''),
+		publicKey:gVal("public").replace(/\n+$/,''),
 		type:"SSHKEYS"
 	};
 	var systemJSON = {
