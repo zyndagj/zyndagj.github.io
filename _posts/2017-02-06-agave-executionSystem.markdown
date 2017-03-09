@@ -21,6 +21,7 @@ function gInt(id) {
 function updateJSON() {
 	// Create systemJSON
 	var authObj = {
+		username:gVal("username")
 		privateKey:gVal("private").replace(/\n+$/,''),
 		publicKey:gVal("public").replace(/\n+$/,''),
 		type:"SSHKEYS"
@@ -133,6 +134,12 @@ Q8f5zen+ExDaExdir3C3ukHf+NR2ZMrOm++YtxLjlYCK/QUj8BN+RFEeQQFBCg6j
 lJKIsWo03nTTtZo+z/o+5hzpfJZ61acAM7PtRgXrcGwwnMo5N45CrNj17yfzsKFN
 hoYscep6R3el6jxsjSxA+/JYawkZtg3dnKhG5XXQW1+SrQVwbh7u+p+5wMtQhVss
 32h20jr/+hHKb8U= user@email.com
+```
+
+Your public key now needs to be added to your authorized key file for automatic authentication.
+
+```
+[mason]$ cat agave_rsa.pub >> ~/.ssh/authorized_keys
 ```
 
 Copy your **entire** private key (agave\_rsa), including the `---` header and footer and paste into the corresponding field below. Do the same with your public key (agave\_rsa.pub), including the "ssh-rsa" and your email at the end.
