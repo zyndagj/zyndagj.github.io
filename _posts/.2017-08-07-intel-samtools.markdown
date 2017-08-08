@@ -1,0 +1,36 @@
+---
+layout: post
+title:  "Accelleraffewting Samtools"
+date:   2017-08-07
+categories: samtools zlib htslib intel ipp knl
+---
+
+TACC recently rolled out the first stage of [Stampede2](https://www.tacc.utexas.edu/systems/stampede2), a 12.7PF system currently ranked at [#12 on the Top500](https://www.top500.org/system/179045). Stampede1 nodes consisted of dual-socket Xeon Sandybridge processors, while the first stage of Stampede2 consists entirely of Intel Knights Landing processors.
+
+| | Stamped1 | Stampede2 |
+|-|--|--|
+| Cores | 16 | 68 |
+| Frequency | 2.7GHz | 1.4GHz |
+| Memory | 32GB | 112GB |
+| Accelerator | KNC/GPU | NA |
+
+While Stampede2 has more than 4 times as many cores as Stamped1, and wider vector processors, it also runs at about half the clock rate. While parallel code can run faster on this new architecture, sequential code will run extremely inefficiently with the slower clockrate. To ensure a good experience for all Stampede2 users, the Life Sciences group has been rebuilding their software stack from scratch - specifically choosing and optimizing applications that will run well on KNLs. One of the most essential tools for bioinformatics is [samtools](http://www.htslib.org/), a suite of programs for interacting with *most* high-throughput sequencing data. In the past few years, pthreads have been integrated into the code to allow for multiple sorting and compression workers, which is good, but I started looking for tricks to optimize samtools for certain hardware.
+
+I ended up coming across this [benchmarking page](http://www.htslib.org/) on the htslib website, which compared the runtime of different implementations of the zlib compression library. The BAM format is both binary and compressed, so any improvement to the underlying compression library will accelerate samtools as well.
+
+I ended up tracking down Intel's guide for ["Building a faster ZLIB with Intel® Integrated Performance Primitives"](https://software.intel.com/en-us/articles/how-to-use-zlib-with-intel-ipp-opertimization), which speeds up zlib deflate by about 50%. Intel Integrated Performance Primitives are architecure-specific instructions and optimized functions which can be used to vectorize and optimize code.
+
+## Building zlib
+
+## Static linking to samtools
+
+## Dynamic linking
+
+## Tests
+
+### Shared memory
+
+### Lustre
+
+### Compatibility
+
