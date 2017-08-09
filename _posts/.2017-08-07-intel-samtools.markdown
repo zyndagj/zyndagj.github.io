@@ -5,7 +5,7 @@ date:   2017-08-07
 categories: samtools zlib htslib intel ipp knl
 ---
 
-TACC recently rolled out the first stage of [Stampede2](https://www.tacc.utexas.edu/systems/stampede2), a 12.7PF system currently ranked at [#12 on the Top500](https://www.top500.org/system/179045). Stampede1 nodes consisted of dual-socket Xeon Sandybridge processors, while the first stage of Stampede2 consists entirely of Intel Knights Landing processors.
+TACC recently rolled out the first stage of [Stampede2](https://www.tacc.utexas.edu/systems/stampede2), a 12.7PF system consisting of 4,200 Intel Knights Landing nodes, and currently ranked at [#12 on the Top500](https://www.top500.org/system/179045).
 
 | | Stamped1 | Stampede2 |
 |-|--|--|
@@ -14,15 +14,46 @@ TACC recently rolled out the first stage of [Stampede2](https://www.tacc.utexas.
 | Memory | 32GB | 112GB |
 | Accelerator | KNC/GPU | NA |
 
-While Stampede2 has more than 4 times as many cores as Stamped1, and wider vector processors, it also runs at about half the clock rate. While parallel code can run faster on this new architecture, sequential code will run extremely inefficiently with the slower clockrate. To ensure a good experience for all Stampede2 users, the Life Sciences group has been rebuilding their software stack from scratch - specifically choosing and optimizing applications that will run well on KNLs. One of the most essential tools for bioinformatics is [samtools](http://www.htslib.org/), a suite of programs for interacting with *most* high-throughput sequencing data. In the past few years, pthreads have been integrated into the code to allow for multiple sorting and compression workers, which is good, but I started looking for tricks to optimize samtools for certain hardware.
+While Stampede2 has more than 4 times as many cores as Stamped1, it also runs at about half the clock rate. This new system is great for threaded and distributed code, but extremely inefficient for sequential software. To ensure a good experience for all Stampede2 users, the Life Sciences group has been rebuilding their software stack from scratch - specifically choosing and optimizing applications that will run well on KNLs.
 
-I ended up coming across this [benchmarking page](http://www.htslib.org/) on the htslib website, which compared the runtime of different implementations of the zlib compression library. The BAM format is both binary and compressed, so any improvement to the underlying compression library will accelerate samtools as well.
+One of the most essential tools for bioinformatics is [samtools](http://www.htslib.org/), a suite of programs for interacting with *most* high-throughput sequencing data. This program utilizes pthreads to allow for concurrent sorting and compression workers. This is fairly decent, but I decided to look for new ways to optimize the code for our hardware.
 
-I ended up tracking down Intel's guide for ["Building a faster ZLIB with Intel® Integrated Performance Primitives"](https://software.intel.com/en-us/articles/how-to-use-zlib-with-intel-ipp-opertimization), which speeds up zlib deflate by about 50%. Intel Integrated Performance Primitives are architecure-specific instructions and optimized functions which can be used to vectorize and optimize code.
+After some searching, I came across [a benchmarking page](www.htslib.org/benchmarks/zlib.html) on the htslib website, which compared the runtime of different implementations of the zlib compression library. Most aligners produce `.sam` files, and samtools is used to filter and convert this data into the binary `.bam` format, which is compressed and indexed for archiving. Any time the file is read it must be decompressed, so accellerating the compression and decompression will benefit most bioinformatics workflows. I tracked down Intel's guide for ["Building a faster ZLIB with Intel® Integrated Performance Primitives"](https://software.intel.com/en-us/articles/how-to-use-zlib-with-intel-ipp-opertimization), and got to work building a new zlib and linking it to samtools.
 
 ## Building zlib
 
+I first had to track down the zlib patch on our system, and untar the actual patch file.
+
+```shell
+# Patch zlib
+tar -xzf $IPPROOT/examples/components_and_examples_lin_ps.tgz ./components/interfaces/ipp_zlib/zlib-1.2.8.patch
+patch -p1 < components/interfaces/ipp_zlib/zlib-1.2.8.patch
+```
+
+Then I loaded the IPP development environment.
+
+```
+# Source IPP environment
+source /opt/intel/compilers_and_libraries_2017.4.196/linux/ipp/bin/ippvars.sh intel64
+source /opt/intel/compilers_and_libraries_2017.4.196/linux/bin/compilervars.sh intel64
+```
+
+Lastly, I compiled zlib for both AVX2 and AVX512 64-bit systems. I deviated slightly from the Intel guide when linking the IPP libraries in the LDFLAGS because I choose to use the static versions. This enables users to simply link `libz.so` into their code without needing to link the IPP libraries as well, providing a seamless experience.
+
+```
+# Compile zlib
+export CFLAGS="-O3 -xCORE-AVX2 -axMIC-AVX512,CORE-AVX512 -fPIC -m64 -DWITH_IPP -I$IPPROOT/include"
+export LDFLAGS="$IPPROOT/lib/intel64/libippdc.a $IPPROOT/lib/intel64/libipps.a $IPPROOT/lib/intel64/libippcore.a"
+./configure --prefix=%{INSTALL_DIR}
+make -j3 shared
+make DESTDIR=${RPM_BUILD_ROOT} install
+```
+
+You can find the the RPM spec file that I wrote [online in our github](https://github.com/TACC/lifesci_spec/blob/separate-rpms/zlib-1.2.8-1.spec) for full reference.
+
 ## Static linking to samtools
+
+After building zlib, I could then compile samtools against it.
 
 ## Dynamic linking
 
