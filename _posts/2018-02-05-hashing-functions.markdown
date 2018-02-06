@@ -5,17 +5,39 @@ date:   2018-02-05
 categories: python developer hashing
 ---
 
-Representing genetic sequences using k-mers, or the biological equivalent of n-grams, is a great way to summarize and numerically represent the variable-length strings. However, the number of unique k-mers grows exponentially with k $$(4^k)$$ and keeping track of all occurrences becomes expensive in system memory. Luckily, bloom filters can be used to keep track of the presence of k-mers, and more expensive counting can be used for frequent k-mers.
 
-While coding up a script that approximated the number of k-mers in a region using [an equation by Swamidass and Baldi](https://en.wikipedia.org/wiki/Bloom_filter#Approximating_the_number_of_items_in_a_Bloom_filter), I reached the portion that required separate hash functions. A bloom filter hashes each value multiple times using different hash functions and sets all of these bits in the bloom filter. I came across several python modules that contained efficient hash functions for indexing and cryptography
+Representing genetic sequences using k-mers, or the biological equivalent of n-grams, is a great way to numerically summarize a linear sequence.
+Depending how unique you need your k-mers to be, you may overallocate your system memory trying to keep track of all 4^k possibilities, where there are 4 possible bases (A, G, C, T) and k-length strings.
+To circumvent this technological constraint, [Bloom filters](https://en.wikipedia.org/wiki/Bloom_filter) were designed to probabilisticly track the presence (not count) of items.
+
+While coding up a script that approximated the number of unique k-mers in a region using a Bloom filter and [an equation by Swamidass and Baldi](https://en.wikipedia.org/wiki/Bloom_filter#Approximating_the_number_of_items_in_a_Bloom_filter), needed the multiple hash functions that algorithms like
+
+* [Bloom filters](https://en.wikipedia.org/wiki/Bloom_filter)
+* [MinHash](https://en.wikipedia.org/wiki/MinHash)
+
+depend on.
+I came across several python modules that contained an array of efficient hash functions for indexing and cryptography
 
 * [pyfasthash](https://github.com/flier/pyfasthash) - Python Non-cryptographic Hash Library
 * [hashlib](https://docs.python.org/2/library/hashlib.html) - Secure hashes and message digests
 * [built-in hash](https://docs.python.org/2/library/functions.html) - Non-cryptographic hashing
 
-While there are many different hashing algorithms, bloom filters simply want hash values that differ between functions. This can be achieved by manually setting the [intitialization seed](https://en.wikipedia.org/wiki/Random_seed) in some functions, but I had a feeling there was a more elegant solution.
+While each module contained several different hashing algorithms, you should not be using an entirely different algorithm just to yield a different value from the same key.
+Some implementations allow the user to initialize a function with a random seed with a [random seed](https://en.wikipedia.org/wiki/Random_seed)
 
-First, lets learn what a hashing function actually is.
+```
+hashA(value, seed1) != hashA(value, seed2)
+```
+
+most do not, and choose a seed at runtime. For cases like these, which includes python's own built-in `hash()` function, there is a simple solution.
+
+### Hash functions
+
+First, lets cover some basic requirements for a hashing function.
+
+#### Determinism
+
+A hash function should always return the same value
 
 ```python
 # Import necessary packages
@@ -31,7 +53,11 @@ print hash('cat')
 -799031295820617361
 ```
 
-A hash function should always return the same value for identical keys,
+however you should be aware that your random seed may get reset between program runs.
+
+#### Uniformity
+
+A hash function should return different values for similar keys while minimizing the chances of value collisions overall.
 
 ```python
 print hash("cat")
@@ -42,7 +68,7 @@ print hash("cats")
 5473382298111946547
 ```
 
-and keys that are similar should also return (sometimes) extremely different values. Oftentimes, you never use the raw key itself, but map the modulus to an array index as in the example below, which hashes a random product of the characters A and B.
+The index size also affects the collision rate.
 
 ```python
 randomStrings = map(lambda x: ''.join(x), product('AB', repeat=3))
@@ -61,7 +87,7 @@ for rString in randomStrings:
 | BBA | -532687530548411570 | 0 |
 | BBB | -532687530548411571 | 9 |
 
-We can also look at index frequencies with a final range of 25.
+Returned values should also be approximately uniform in distribution. We can generate a histogram of the returned indicies and perform a chi-squared test to test for uniformity.
 
 ``` python
 nBins = 25
@@ -72,7 +98,6 @@ R = 3
 nV = len(choices)**R
 randomStrings = map(lambda x: ''.join(x), product(choices,repeat=R))
 hashValues = map(lambda x: hash(x)%nBins, randomStrings)
-
 
 # Generate histogram and chi-squared test
 n, bins, patches = plt.hist(hashValues, bins=nBins)
