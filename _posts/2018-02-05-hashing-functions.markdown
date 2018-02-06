@@ -49,6 +49,7 @@ randomStrings = map(lambda x: ''.join(x), product('AB', repeat=3))
 for rString in randomStrings:
   print rString, hash(rString), hash(rString)%10
 ```
+
 | String | Hash value | Modulus |
 |:------:|:----------:|:-------:|
 | AAA | 593367982085446532 | 2 |
@@ -141,14 +142,14 @@ for i in range(8):
 
 |  Integer    |          Binary |
 |:-----------:|:---------------:|
-|0 XOR 3 = 3 | 000 XOR 011 = 011 |
-|1 XOR 3 = 2 | 001 XOR 011 = 010 |
-|2 XOR 3 = 1 | 010 XOR 011 = 001 |
-|3 XOR 3 = 0 | 011 XOR 011 = 000 |
-|4 XOR 3 = 7 | 100 XOR 011 = 111 |
-|5 XOR 3 = 6 | 101 XOR 011 = 110 |
-|6 XOR 3 = 5 | 110 XOR 011 = 101 |
-|7 XOR 3 = 4 | 111 XOR 011 = 100 |
+| `0 XOR 3 = 3` | `000 XOR 011 = 011` |
+| `1 XOR 3 = 2` | `001 XOR 011 = 010` |
+| `2 XOR 3 = 1` | `010 XOR 011 = 001` |
+| `3 XOR 3 = 0` | `011 XOR 011 = 000` |
+| `4 XOR 3 = 7` | `100 XOR 011 = 111` |
+| `5 XOR 3 = 6` | `101 XOR 011 = 110` |
+| `6 XOR 3 = 5` | `110 XOR 011 = 101` |
+| `7 XOR 3 = 4` | `111 XOR 011 = 100` |
 
 This operation allows us to generate different hashing functions from the single built-in `hash()` function that only accepts a single object to hash. Lets test this using a large dataset. First, lets generate $23^6$ strings and hash them into 100 bins.
 
