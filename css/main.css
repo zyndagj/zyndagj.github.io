@@ -118,7 +118,7 @@ a:hover   { color: #000; }
 }
 
 .post img {
-	width: 70%;
+	max-width: 70%;
 	display: block;
 	margin: 0 auto;
 }
