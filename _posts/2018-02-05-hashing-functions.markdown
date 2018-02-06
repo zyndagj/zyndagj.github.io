@@ -5,7 +5,7 @@ date:   2018-02-05
 categories: python developer hashing
 ---
 
-Representing genetic sequences using k-mers, or the biological equivalent of n-grams, is a great way to summarize and numerically represent the variable-length strings. However, the number of unique k-mers grows exponentially with k $(4^k)$ and keeping track of all occurrences becomes expensive in system memory. Luckily, bloom filters can be used to keep track of the presence of k-mers, and more expensive counting can be used for frequent k-mers.
+Representing genetic sequences using k-mers, or the biological equivalent of n-grams, is a great way to summarize and numerically represent the variable-length strings. However, the number of unique k-mers grows exponentially with k $$(4^k)$$ and keeping track of all occurrences becomes expensive in system memory. Luckily, bloom filters can be used to keep track of the presence of k-mers, and more expensive counting can be used for frequent k-mers.
 
 While coding up a script that approximated the number of k-mers in a region using [an equation by Swamidass and Baldi](https://en.wikipedia.org/wiki/Bloom_filter#Approximating_the_number_of_items_in_a_Bloom_filter), I reached the portion that required separate hash functions. A bloom filter hashes each value multiple times using different hash functions and sets all of these bits in the bloom filter. I came across several python modules that contained efficient hash functions for indexing and cryptography
 
@@ -151,7 +151,7 @@ for i in range(8):
 | `6 XOR 3 = 5` | `110 XOR 011 = 101` |
 | `7 XOR 3 = 4` | `111 XOR 011 = 100` |
 
-This operation allows us to generate different hashing functions from the single built-in `hash()` function that only accepts a single object to hash. Lets test this using a large dataset. First, lets generate $23^6$ strings and hash them into 100 bins.
+This operation allows us to generate different hashing functions from the single built-in `hash()` function that only accepts a single object to hash. Lets test this using a large dataset. First, lets generate $$23^6$$ strings and hash them into 100 bins.
 
 ```python
 nBins = 100
