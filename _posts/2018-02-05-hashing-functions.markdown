@@ -29,7 +29,7 @@ Some implementations allow the user to initialize a function with a random seed 
 hashA(value, seed1) != hashA(value, seed2)
 ```
 
-most do not, and choose a seed at runtime. For cases like these, which includes python's own built-in `hash()` function, there is a simple solution.
+most do not, and choose a seed at runtime. For cases like these, which includes python's own built-in `hash()` function, there is a simple solution using the XOR operation.
 
 ### Hash functions
 
@@ -110,7 +110,8 @@ t=plt.figtext(0.5,0,r'P(chi-squared > %.2f) = %0.3f'%(x2,p), ha='center')
 
 ![original histo](/assets/xor_uniform_01.png)
 
-You can see that the chi-squared test results in an insignificant P-value of 0.675, meaning that there is no difference between the observed (generated) indices and the expected uniform distribution. Just to be thorough, lets look at the resulting P-values for [Normal](https://en.wikipedia.org/wiki/Normal_distribution) and [Uniform](https://en.wikipedia.org/wiki/Uniform_distribution_(continuous)) random variables.
+You can see that the chi-squared test results in an insignificant P-value of 0.675, meaning that there is no difference between the observed (generated) indices and the _expected_ uniform distribution.
+To be thorough, lets look at the resulting P-values for [Normal](https://en.wikipedia.org/wiki/Normal_distribution) and [Uniform](https://en.wikipedia.org/wiki/Uniform_distribution_(continuous)) random variables.
 
 ```python
 plt.figure(figsize=(14,5))
@@ -133,9 +134,11 @@ t=plt.figtext(0.73,0,r'P(chi-squared > %.2f) = %0.3f'%(x2,p), ha='center')
 
 ![chi-squared comparison](/assets/xor_chi2_test.png)
 
-You can see that the Normal distribution has a significant (0.00) P-value, while the Uniform distribution is greater than 0.05. This test will be used to ensure hash functions are correct and look Uniform in the future.
+You can see that the Normal distribution has a significant (0.000) P-value, while the Uniform distribution is greater than 0.05. This test will be used to ensure hash functions are correct and look Uniform throughout this post.
 
-Hashing functions are designed to generate uniform distributions to utilize an entire index range and minimize the possibility of collisions, when two separate keys hash to the same value. Some hashing functions work by reducing values with an XOR operation, including the original random seed. 
+### XOR Operation
+
+The bitwise XOR operation (`^` in python) compares each of the bits in two numbers and outputs the following:
 
 ```
 XOR(a, b)
@@ -143,40 +146,62 @@ XOR(a, b)
  2. IF a != b RETURN 1
 ```
 
-The bitwise XOR operation stands apart from the AND and OR operations because it can preserve the ratio of bits. Assuming binary arrays A and B, the bitwise operators AND, OR, and XOR would return the following
-
-| A | B | AND | OR | XOR |
-|:-:|:-:|:-:|:-:|:-:|
-| 0 | 0 | 0 | 0 | 0 |
-| 0 | 1 | 0 | 1 | 1 |
-| 1 | 0 | 0 | 1 | 1 |
-| 1 | 1 | 1 | 1 | 0 |
-
-This can be demonstrated in code as well
+The bitwise XOR operation stands apart from the AND and OR operations because it non-destructively permutes the bits in an input sequence. We can cycle through each number of fixed-bit width to demonstrate
 
 ```python
-print "  Integer              Binary"
-for i in range(8):
-  # Binary representation of i
-  bi = bin(i)[2:].zfill(3)
-  y = 3
-  # Binary representation of y
-  by = bin(y)[2:].zfill(3)
-  print "%i XOR %i = %i      %s XOR %s = %s"%(i, y, i^y, bi, by, bin(i^y)[2:].zfill(3))
+for j in (2,4,8,16):
+  bitWidth = j/2
+  print "XOR "+' '.join(['%2i'%(x) for x in range(j)])
+  for i in range(j):
+    print "%2i  "%(i)+' '.join(['%2i'%(i^x) for x in range(j)])
+  print
+
+XOR  0  1
+ 0   0  1
+ 1   1  0
+
+XOR  0  1  2  3
+ 0   0  1  2  3
+ 1   1  0  3  2
+ 2   2  3  0  1
+ 3   3  2  1  0
+
+XOR  0  1  2  3  4  5  6  7
+ 0   0  1  2  3  4  5  6  7
+ 1   1  0  3  2  5  4  7  6
+ 2   2  3  0  1  6  7  4  5
+ 3   3  2  1  0  7  6  5  4
+ 4   4  5  6  7  0  1  2  3
+ 5   5  4  7  6  1  0  3  2
+ 6   6  7  4  5  2  3  0  1
+ 7   7  6  5  4  3  2  1  0
+
+XOR  0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15
+ 0   0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15
+ 1   1  0  3  2  5  4  7  6  9  8 11 10 13 12 15 14
+ 2   2  3  0  1  6  7  4  5 10 11  8  9 14 15 12 13
+ 3   3  2  1  0  7  6  5  4 11 10  9  8 15 14 13 12
+ 4   4  5  6  7  0  1  2  3 12 13 14 15  8  9 10 11
+ 5   5  4  7  6  1  0  3  2 13 12 15 14  9  8 11 10
+ 6   6  7  4  5  2  3  0  1 14 15 12 13 10 11  8  9
+ 7   7  6  5  4  3  2  1  0 15 14 13 12 11 10  9  8
+ 8   8  9 10 11 12 13 14 15  0  1  2  3  4  5  6  7
+ 9   9  8 11 10 13 12 15 14  1  0  3  2  5  4  7  6
+10  10 11  8  9 14 15 12 13  2  3  0  1  6  7  4  5
+11  11 10  9  8 15 14 13 12  3  2  1  0  7  6  5  4
+12  12 13 14 15  8  9 10 11  4  5  6  7  0  1  2  3
+13  13 12 15 14  9  8 11 10  5  4  7  6  1  0  3  2
+14  14 15 12 13 10 11  8  9  6  7  4  5  2  3  0  1
+15  15 14 13 12 11 10  9  8  7  6  5  4  3  2  1  0
 ```
 
-|  Integer    |          Binary |
-|:-----------:|:---------------:|
-| `0 XOR 3 = 3` | `000 XOR 011 = 011` |
-| `1 XOR 3 = 2` | `001 XOR 011 = 010` |
-| `2 XOR 3 = 1` | `010 XOR 011 = 001` |
-| `3 XOR 3 = 0` | `011 XOR 011 = 000` |
-| `4 XOR 3 = 7` | `100 XOR 011 = 111` |
-| `5 XOR 3 = 6` | `101 XOR 011 = 110` |
-| `6 XOR 3 = 5` | `110 XOR 011 = 101` |
-| `7 XOR 3 = 4` | `111 XOR 011 = 100` |
+This property is why applying an XOR operation to a random variable results in another random variable. Some hash functions incoroporate the random seed using XOR.
 
-This operation allows us to generate different hashing functions from the single built-in `hash()` function that only accepts a single object to hash. Lets test this using a large dataset. First, lets generate $$23^6$$ strings and hash them into 100 bins.
+### Utilizing XOR
+
+Since Python's built-in `hash()` function is random, a NEW random result can be generated by applying the XOR with another number.
+Lets see how well this holds up in the real world.
+First, lets generate \$ 23^6 \$ strings and hash them into 100 bins.
 
 ```python
 nBins = 100
@@ -198,7 +223,7 @@ plt.title("Hashing %i^%i (%i) unique strings into %i bins"%(len(choices), R, nV,
 
 ![raw hash values](/assets/xor_original.png)
 
-Then, starting from the original hash values, we can generate different datasets by applying an XOR with a random variable.
+Then, starting from the original hash values, we can generate NEW datasets by applying an XOR with a random variable.
 
 ```
 # Generate histogram and chi-squared test
@@ -231,4 +256,6 @@ for i in range(N):
 print "%i/%i = %0.3f XOR'd values were uniform"%(numUniform, N, numUniform/float(N))
 ```
 
-661 of the 1000 random datasets would statistically appear to have been generated from a uniform distribution. While not perfect, this is fairly good for a hash function.
+661 of the 1000 random datasets would statistically appear to have been generated from a uniform distribution. While not perfect, this is fairly good for a hash function. Please note that since this code uses random values, your results may differ.
+
+_edited 2018-02-06_
