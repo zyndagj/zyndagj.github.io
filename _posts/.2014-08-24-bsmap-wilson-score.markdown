@@ -36,6 +36,7 @@ Uses a wilson confidence interval.
 
 Sources:
 1. Wilson, E. B. (1927), "Probable Inference, the Law of Succession, and Statistical Inference," Journal of the American Statistical Association, 22, 209-212.
+2. Wallis, Sean. "Binomial confidence intervals and contingency tests: mathematical fundamentals and the evaluation of alternative methods." Journal of Quantitative Linguistics 20, no. 3 (2013): 178-208.
 
 Nice explanation by Evan Miller
 http://www.evanmiller.org/how-not-to-sort-by-average-rating.html
