@@ -1,0 +1,14 @@
+$ python thread_cant_exit.py 
+
+Thread-0 sleeping 1/5
+Thread-0 finished sleeping
+Thread-0 sleeping 2/5
+^C^C^C^C^C^CThread-0 finished sleeping
+Thread-0 sleeping 3/5
+Thread-0 finished sleeping
+Thread-0 sleeping 4/5
+Thread-0 finished sleeping
+Thread-0 sleeping 5/5
+Thread-0 finished sleeping
+Thread-0 broke out of loop
+Exception KeyboardInterrupt in <module 'threading' from '/Users/gzynda/miniconda3/envs/github-pages/lib/python2.7/threading.pyc'> ignored

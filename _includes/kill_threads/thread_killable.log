@@ -1,0 +1,8 @@
+$ python thread_killable.py 
+
+Thread-0 sleeping 1/5
+Thread-0 finished sleeping
+Thread-0 sleeping 2/5
+^CThread-0 finished sleeping
+Thread-0 detected alive=False
+Thread-0 broke out of loop

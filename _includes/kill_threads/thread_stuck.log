@@ -1,0 +1,17 @@
+$ python thread_stuck.py 
+
+Thread-0 sleeping 1/5
+Thread-0 sleeping 2/5
+^C^C^C^C^C^C^C^CThread-0 sleeping 3/5
+Thread-0 sleeping 4/5
+Thread-0 sleeping 5/5
+Traceback (most recent call last):
+  File "thread_stuck.py", line 24, in <module>
+    main()
+  File "thread_stuck.py", line 13, in main
+    t.join()
+  File "/Users/gzynda/miniconda3/envs/github-pages/lib/python2.7/threading.py", line 940, in join
+    self.__block.wait()
+  File "/Users/gzynda/miniconda3/envs/github-pages/lib/python2.7/threading.py", line 340, in wait
+    waiter.acquire()
+KeyboardInterrupt

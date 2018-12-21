@@ -13,3 +13,4 @@ navigation:
  - title: About
    url: /about.html
 exclude: [oldsite]
+future: true
