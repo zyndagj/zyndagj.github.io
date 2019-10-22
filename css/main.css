@@ -27,6 +27,12 @@ h3, h4, h5, h6 {
 }
 h1 { margin-bottom: 1em; }
 p { margin: 1em 0; }
+blockquote {
+	margin: 1em 0;
+	padding: 0 1em;
+	color: #6a737d;
+	border-left: .25em solid #dfe2e5;
+}
 
 a         { color: #00a; }
 a:hover   { color: #000; }
@@ -110,6 +116,13 @@ a:hover   { color: #000; }
 	padding: 15px 35px;
 	background-color: white;
 }
+
+.post h2 {
+	padding-top: 1em;
+	padding-bottom: 0.2em;
+	margin-bottom: 1em;
+	border-bottom: thin solid black;
+}
 	
 .post pre {
 	border: 1px solid #ddd;
@@ -122,6 +135,11 @@ a:hover   { color: #000; }
 .post img {
 	max-width: 70%;
 	display: block;
+	margin: 0 auto;
+}
+.post .caption {
+	max-width: 50%;
+	text-align: center;
 	margin: 0 auto;
 }
 
@@ -150,7 +168,7 @@ a:hover   { color: #000; }
 
 /* tables */
 .post table {
-	margin: 16px auto;
+	margin: 1em auto;
 	border-collapse: collapse;
 }
 
