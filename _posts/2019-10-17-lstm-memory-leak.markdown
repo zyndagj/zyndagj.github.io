@@ -341,3 +341,109 @@ set_session(tensorflow.Session(config=config))
 to yield the best performance and memory efficiency for LSTM models.
 
 > Raw testing code and results available in [rnn_memory_leak.tar.gz](/assets/rnn_memory_leak.tar.gz)
+
+#### Additional results on Anaconda TF 2.0.0 + MKL
+
+| DNN | XLA | Config | ArithOpt | Min | Q1 | Median | Q3 | Max | median(Rate) |
+|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+| on | on | default | on | 0 | 26054 | 49176 | 51200 | 315692 | 147 |
+| on | on | custom | on | 60 | 26490 | 49156 | 51210 | 315124 | 147 |
+| on | on | custom | off | 4 | 26064 | 49168 | 51200 | 314016 | 148 |
+| on | off | default | on | 0 | 24756 | 51172 | 51210 | 313808 | 148 |
+| on | off | custom | on | 12 | 24826 | 49156 | 51202 | 313720 | 154 |
+| on | off | custom | off | 4 | 26194 | 50596 | 51200 | 313828 | 148 |
+| off | on | default | on | 50180 | 50732 | 51832 | 53918 | 74776 | 473 |
+| off | on | custom | on | 49388 | 50264 | 51460 | 54454 | 70060 | 492 |
+| off | on | custom | off | 49604 | 50588 | 51016 | 53692 | 77564 | 486 |
+| off | off | default | on | 49428 | 50452 | 51112 | 54184 | 72856 | 488 |
+| off | off | custom | on | 48868 | 51340 | 52108 | 53736 | 71092 | 483 |
+| off | off | custom | off | 49936 | 51146 | 51440 | 55436 | 76740 | 487 |
+
+These results have prompted me to move away from running LSTMs on CPUs.
+
+<details>
+<summary>Updated code for TF 2.0.0</summary>
+<pre style="highlight">
+import numpy as np
+import tensorflow
+from tensorflow.core.protobuf import rewriter_config_pb2
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import LSTM, TimeDistributed, Dense
+from tensorflow.keras.optimizers import Adam
+import resource, pprint, sys, os
+from time import time
+
+dnn, xla, c, opt = 'on', 'off', 'default', 'on'
+if 'TF_XLA_FLAGS' in os.environ:
+	xla = 'on'
+if 'TF_DISABLE_MKL' in os.environ:
+	dnn = 'off'
+if len(sys.argv) > 1 and sys.argv[1] == 'custom':
+	c = 'custom'
+	tensorflow.config.threading.set_intra_op_parallelism_threads(24)
+	tensorflow.config.threading.set_inter_op_parallelism_threads(2)
+if len(sys.argv) > 2 and sys.argv[2] == 'arith':
+	opt = 'off'
+	off = rewriter_config_pb2.RewriterConfig.OFF
+	tensorflow.config.optimizer.set_experimental_options({'arithmetic_optimization':off})
+suff = 'dnn-%s_xla-%s_c-%s_opt-%s'%(dnn, xla, c, opt)
+
+# Class for generating input and output data
+class d4:
+	def __init__(self):
+		fair = np.ones(4)/4.0
+		load = np.array([0.5, 0.3, 0.2, 0.0])
+		self.dice = np.vstack((fair, load))
+	def roll_gen(self, n):
+		x, y = np.zeros((n,1), dtype=np.uint8), np.zeros((n,1), dtype=np.uint8)
+		y[0] = np.random.choice(2)
+		for i in range(n):
+			x[i] = np.random.choice(4, replace=True, p=self.dice[y[i,0],:])
+			if i < n-1:
+				if i >= 1 and np.all(x[i-1:i+1] == 1):
+					y[i+1] = 1 - y[i]
+				else:
+					y[i+1] = y[i]
+		return x, y
+	def roll_batch(self, n, b):
+		x,y = np.zeros((b,n,1), dtype=np.uint8), np.zeros((b,n,1), dtype=np.uint8)
+		for i in range(b):
+			tx, ty = self.roll_gen(n)
+			x[i,:,:] = tx
+			y[i,:,:] = ty
+		return x,y
+# Helper function for creating model
+def gen_model(n):
+	model = Sequential()
+	model.add(LSTM(128, return_sequences=True, input_shape=(n,1)))
+	#model.add(LSTM(128, return_sequences=True))
+	#model.add(TimeDistributed(Dense(128, activation='tanh')))
+	model.add(TimeDistributed(Dense(1, activation='linear')))
+	model.compile(loss='mean_squared_error', optimizer=Adam())
+	return model
+
+# Initialize model and data
+seq_len = 200
+batch_size = 500
+epochs = 20
+casino = d4()
+model = gen_model(seq_len)
+mem = np.zeros(epochs+1)
+rateA = np.zeros(epochs)
+mem[0] = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
+# Run model
+for e in range(epochs):
+	xb, yb = casino.roll_batch(seq_len, batch_size)
+	start = time()
+	loss = model.train_on_batch(xb, yb)
+	elapsed = time()-start
+	rate = float(batch_size)/elapsed
+	kb = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
+	print "batch %02i - Max res size: %.0f MB     Change res size: %.2f MB     Loss: %.3f    Rate: %.1f seq/s "%(e+1, kb/1000.0, (kb-mem[e])/1000.0, loss, rate)
+	mem[e+1] = kb
+	rateA[e] = rate
+with open('mem_%s.tsv'%(suff),'w') as OF:
+	for m in mem: OF.write('%f\n'%(m))
+with open('rate_%s.tsv'%(suff),'w') as OF:
+	for r in rateA: OF.write('%f\n'%(r))
+</pre></details>
