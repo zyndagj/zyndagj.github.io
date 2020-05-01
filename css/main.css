@@ -20,11 +20,6 @@ body {
   /*text-align: center;*/
 }
 
-h1, h2 { font-size: 150%;}
-h3, h4, h5, h6 {
-  font-size: 125%;
-  color:#555152;
-}
 h1 { margin-bottom: 1em; }
 p { margin: 1em 0; }
 blockquote {
@@ -117,11 +112,23 @@ a:hover   { color: #000; }
 	background-color: white;
 }
 
+.post h1 { font-size: 200%;}
+.post h3 {
+  margin-top: 1em;
+  font-size: 175%;
+  color:#555152;
+}
+.post h4, h5, h6 {
+  margin-top: 1em;
+  font-size: 150%;
+  color:#615C5D;
+}
 .post h2 {
 	padding-top: 1em;
 	padding-bottom: 0.2em;
 	margin-bottom: 1em;
 	border-bottom: thin solid black;
+	font-size: 175%;
 }
 	
 .post pre {
