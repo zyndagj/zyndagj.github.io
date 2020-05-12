@@ -5,7 +5,7 @@ date:   2020-04-30
 categories: python lmod module conda tensorflow
 ---
 
-The [Longhorn](https://www.tacc.utexas.edu/systems/frontera) GPU cluster at the Texas Advanced Computing Center, is comprised of 108 IBM Power System AC922 nodes with 4 NVIDIA V100 GPUs per node.
+The [Longhorn](https://www.tacc.utexas.edu/systems/frontera) GPU cluster at the Texas Advanced Computing Center, is comprised of 108 IBM Power System AC922 nodes, each with 4 NVIDIA V100 GPUs.
 In addition to general GPU-accelerated applications, this system is meant to support machine learning.
 If you go to PyPI, you will discover that there are official `x86_64` builds of [tensorflow-gpu](https://pypi.org/project/tensorflow-gpu/#files), but none for the PowerPC architecture.
 Even if the architecture matched the system, you still have to hope it was compiled against your version of CUDA, since this is omitted from the package name.
@@ -167,7 +167,9 @@ Each of these modules will need to perform the following operations:
 
 **On load**
 
-1. Set the `CONDA_ENV_PATH` to the system location and a standard local location for users
+1. Use a standard location outside of `$HOME`, which has a quota, for user environments and any additional packages
+   * Set `CONDA_ENVS_PATH` to both the system and user `/envs` paths
+   * Set `CONDA_PKGS_DIRS` to both the system and user `/pkgs` paths
 2. Initialize conda
 3. Load the target environment
 
@@ -215,7 +217,8 @@ local conda_dir = "${CONDA_DIR}"
 -- Accept software license
 setenv("IBM_POWERAI_LICENSE_ACCEPT","yes")
 -- Specify where system and user environments should be created
-setenv("CONDA_ENVS_PATH", os.getenv("SCRATCH") .. "/conda_envs:" .. conda_dir .. "/envs")
+setenv("CONDA_ENVS_PATH", os.getenv("SCRATCH") .. "/conda_local/envs:" .. conda_dir .. "/envs")
+setenv("CONDA_PKGS_DIRS", os.getenv("SCRATCH") .. "/conda_local/pkgs:" .. conda_dir .. "/pkgs")
 
 -- Initialize conda
 execute{cmd="source " .. conda_dir .. "/etc/profile.d/conda.sh", modeA={"load"}}
@@ -271,7 +274,8 @@ local conda_dir = "${CONDA_DIR}"
 -- Accept software license
 setenv("IBM_POWERAI_LICENSE_ACCEPT","yes")
 -- Specify where system and user environments should be created
-setenv("CONDA_ENVS_PATH", os.getenv("SCRATCH") .. "/conda_envs:" .. conda_dir .. "/envs")
+setenv("CONDA_ENVS_PATH", os.getenv("SCRATCH") .. "/conda_local/envs:" .. conda_dir .. "/envs")
+setenv("CONDA_PKGS_DIRS", os.getenv("SCRATCH") .. "/conda_local/pkgs:" .. conda_dir .. "/pkgs")
 
 -- Initialize conda and activate environment
 execute{cmd="source " .. conda_dir .. "/etc/profile.d/conda.sh; conda activate py${PYV}_${ENV}", modeA={"load"}}
