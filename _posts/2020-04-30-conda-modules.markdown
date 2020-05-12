@@ -218,7 +218,8 @@ local conda_dir = "${CONDA_DIR}"
 setenv("IBM_POWERAI_LICENSE_ACCEPT","yes")
 -- Specify where system and user environments should be created
 setenv("CONDA_ENVS_PATH", os.getenv("SCRATCH") .. "/conda_local/envs:" .. conda_dir .. "/envs")
-setenv("CONDA_PKGS_DIRS", os.getenv("SCRATCH") .. "/conda_local/pkgs:" .. conda_dir .. "/pkgs")
+-- Directories are separated with a comma
+setenv("CONDA_PKGS_DIRS", os.getenv("SCRATCH") .. "/conda_local/pkgs," .. conda_dir .. "/pkgs")
 
 -- Initialize conda
 execute{cmd="source " .. conda_dir .. "/etc/profile.d/conda.sh", modeA={"load"}}
@@ -275,7 +276,8 @@ local conda_dir = "${CONDA_DIR}"
 setenv("IBM_POWERAI_LICENSE_ACCEPT","yes")
 -- Specify where system and user environments should be created
 setenv("CONDA_ENVS_PATH", os.getenv("SCRATCH") .. "/conda_local/envs:" .. conda_dir .. "/envs")
-setenv("CONDA_PKGS_DIRS", os.getenv("SCRATCH") .. "/conda_local/pkgs:" .. conda_dir .. "/pkgs")
+-- Directories are separated with a comma
+setenv("CONDA_PKGS_DIRS", os.getenv("SCRATCH") .. "/conda_local/pkgs," .. conda_dir .. "/pkgs")
 
 -- Initialize conda and activate environment
 execute{cmd="source " .. conda_dir .. "/etc/profile.d/conda.sh; conda activate py${PYV}_${ENV}", modeA={"load"}}
