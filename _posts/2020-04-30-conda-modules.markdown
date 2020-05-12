@@ -232,7 +232,7 @@ execute{cmd="for i in $(seq ${CONDA_SHLVL:=0}); do conda deactivate; done; pre="
 family("python")
 </pre></details>
 
-<details><summary>conda.tmpl</summary><pre style="highlight">
+<details><summary>env.tmpl</summary><pre style="highlight">
 local help_message = [[
 Anaconda python environment containing ${ENV}, which contains:
 
