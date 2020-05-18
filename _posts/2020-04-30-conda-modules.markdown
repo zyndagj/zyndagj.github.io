@@ -171,7 +171,13 @@ Each of these modules will need to perform the following operations:
    * Set `CONDA_ENVS_PATH` to both the system and user `/envs` paths
    * Set `CONDA_PKGS_DIRS` to both the system and user `/pkgs` paths
 2. Initialize conda
-3. Load the target environment
+3. Export conda functions
+   * `conda`
+   * `__conda_activate`
+   * `__conda_hashr`
+   * `__conda_reactivate`
+   * `__add_sys_prefix_to_path`
+4. Load the target environment
 
 **On unload**
 
@@ -213,6 +219,7 @@ whatis("Description: Base Anaconda python environment")
 whatis("URL: https://docs.conda.io/projects/conda/en/latest/user-guide/getting-started.html")
 
 local conda_dir = "${CONDA_DIR}"
+local funcs = "conda __conda_activate __conda_hashr __conda_reactivate __add_sys_prefix_to_path"
 
 -- Accept software license
 setenv("IBM_POWERAI_LICENSE_ACCEPT","yes")
@@ -222,11 +229,12 @@ setenv("CONDA_ENVS_PATH", os.getenv("SCRATCH") .. "/conda_local/envs:" .. conda_
 setenv("CONDA_PKGS_DIRS", os.getenv("SCRATCH") .. "/conda_local/pkgs," .. conda_dir .. "/pkgs")
 
 -- Initialize conda
-execute{cmd="source " .. conda_dir .. "/etc/profile.d/conda.sh", modeA={"load"}}
+execute{cmd="source " .. conda_dir .. "/etc/profile.d/conda.sh; export -f " .. funcs, modeA={"load"}}
 -- Unload environments and clear conda from environment
 execute{cmd="for i in $(seq ${CONDA_SHLVL:=0}); do conda deactivate; done; pre=" .. conda_dir .. "; \
 	export LD_LIBRARY_PATH=$(echo ${LD_LIBRARY_PATH} | tr ':' '\\n' | grep . | grep -v $pre | tr '\\n' ':' | sed 's/:$//'); \
 	export PATH=$(echo ${PATH} | tr ':' '\\n' | grep . | grep -v $pre | tr '\\n' ':' | sed 's/:$//'); \
+	unset -f " .. funcs .. "; \
 	unset $(env | grep -o \"[^=]*CONDA[^=]*\");", modeA={"unload"}}
 
 -- Prevent from being loaded with another system python or conda environment
@@ -271,6 +279,7 @@ whatis("Description: ${ENV} anaconda python environment")
 whatis("URL: https://docs.conda.io/projects/conda/en/latest/user-guide/getting-started.html")
 
 local conda_dir = "${CONDA_DIR}"
+local funcs = "conda __conda_activate __conda_hashr __conda_reactivate __add_sys_prefix_to_path"
 
 -- Accept software license
 setenv("IBM_POWERAI_LICENSE_ACCEPT","yes")
@@ -280,11 +289,12 @@ setenv("CONDA_ENVS_PATH", os.getenv("SCRATCH") .. "/conda_local/envs:" .. conda_
 setenv("CONDA_PKGS_DIRS", os.getenv("SCRATCH") .. "/conda_local/pkgs," .. conda_dir .. "/pkgs")
 
 -- Initialize conda and activate environment
-execute{cmd="source " .. conda_dir .. "/etc/profile.d/conda.sh; conda activate py${PYV}_${ENV}", modeA={"load"}}
+execute{cmd="source " .. conda_dir .. "/etc/profile.d/conda.sh; export -f " .. funcs, modeA={"load"}}
 -- Unload environments and clear conda from environment
 execute{cmd="for i in $(seq ${CONDA_SHLVL:=0}); do conda deactivate; done; pre=" .. conda_dir .. "; \
 	export LD_LIBRARY_PATH=$(echo ${LD_LIBRARY_PATH} | tr ':' '\\n' | grep . | grep -v $pre | tr '\\n' ':' | sed 's/:$//'); \
 	export PATH=$(echo ${PATH} | tr ':' '\\n' | grep . | grep -v $pre | tr '\\n' ':' | sed 's/:$//'); \
+	unset -f " .. funcs .. "; \
 	unset $(env | grep -o \"[^=]*CONDA[^=]*\");", modeA={"unload"}}
 -- Prevent from being loaded with another system python or conda environment
 family("python")
